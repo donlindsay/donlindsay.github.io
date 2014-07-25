@@ -85,7 +85,7 @@
   currentType="div">
     <div class="slide">
     <h1><xt:use types="string" label="slide_title">Resource Description
-      Framework</xt:use></h1>
+      Framework (RDF)</xt:use></h1>
     <xt:bag types="simple_list incremental_list anyElement" label="slide_body">
       <p>Within the W3C corpus of Recommendations and Specifications are
       several grammars for operating on Linked Data. Linked Data is a set of
@@ -175,6 +175,26 @@
                 Ontologies in Org Mode</li>
             </xt:use><xt:use types="li" label="item" currentType="li"><li>Org
                 Documents as Ontologies</li>
+            </xt:use></xt:repeat>
+        </ul>
+      </xt:use></xt:bag>
+    </div>
+  </xt:use><xt:use types="slide chapter_slide handout" label="slide"
+  currentType="slide">
+    <div class="slide">
+    <h1><xt:use types="string" label="slide_title">GNU Emacs and Org Mode
+    (MX)</xt:use></h1>
+    <xt:bag types="simple_list incremental_list anyElement" label="slide_body">
+      <p>Current support for N3 and OWL2. MX-RDF goes beyond Emacs Mode for OWL
+      and N3-Mode, but can be used with both of these packages and provides a
+      framework for extending org documents to N3 and OWL2 syntax buffers.</p>
+      <xt:use types="simple_list" label="simple_list" currentType="ul"><ul>
+          <xt:repeat minOccurs="1" label="items" maxOccurs="*">
+            <xt:use types="li" label="item" currentType="li"><li><a
+                href="http://owl-emacs.projects.semwebcentral.org/">Emacs Mode
+                for OWL</a></li>
+            </xt:use><xt:use types="li" label="item" currentType="li"><li><a
+                href="http://larve.net/people/hugo/2003/scratchpad/NotationThreeEmacsMode.html">N3-Mode</a></li>
             </xt:use></xt:repeat>
         </ul>
       </xt:use></xt:bag>
