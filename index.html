@@ -151,6 +151,34 @@
         </ul>
       </xt:use></xt:bag>
     </div>
+  </xt:use><xt:use types="slide chapter_slide handout" label="slide"
+  currentType="slide">
+    <div class="slide">
+    <h1><xt:use types="string" label="slide_title">OWL2 Functional Style
+    Syntax</xt:use></h1>
+    <xt:bag types="simple_list incremental_list anyElement" label="slide_body">
+      <p>"A functional-style syntax ontology document is a sequence of Unicode
+      characters [UNICODE] accessible via some IRI by means of the standard
+      protocols such that its text matches the ontologyDocument production of
+      the grammar defined in this specification document, and it can be
+      converted into an ontology by means of the canonical parsing process
+      described in Section 3.6 and other parts of this specification document.
+      A functional-style syntax ontology document SHOULD use the UTF-8 encoding
+      [RFC 3629]."</p>
+
+      <p><a
+      href="http://www.w3.org/TR/owl-syntax/#Functional-Style_Syntax">http://www.w3.org/TR/owl-syntax/#Functional-Style_Syntax</a>
+      </p>
+      <xt:use types="simple_list" label="simple_list" currentType="ul"><ul>
+          <xt:repeat minOccurs="1" label="items" maxOccurs="*">
+            <xt:use types="li" label="item" currentType="li"><li>MX-RDF
+                Ontologies in Org Mode</li>
+            </xt:use><xt:use types="li" label="item" currentType="li"><li>Org
+                Documents as Ontologies</li>
+            </xt:use></xt:repeat>
+        </ul>
+      </xt:use></xt:bag>
+    </div>
   </xt:use></xt:repeat>
 </body>
 </html>
