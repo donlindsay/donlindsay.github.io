@@ -51,7 +51,7 @@
   &lt;<xt:use types="string" label="email">donlindsay.github.io</xt:use>&gt; 
 </address>
 
-<p><xt:use types="string" label="event"></xt:use></p>
+<p><xt:use types="string">xk05 at #emacs on freenode</xt:use></p>
 </div>
 
 <div class="cover-bottom">
@@ -61,9 +61,16 @@
 <xt:repeat minOccurs="2" label="slides" maxOccurs="*">
   <xt:use types="slide chapter_slide handout" label="a_slide" currentType="div">
     <div class="slide">
-    <h1><xt:use types="string" label="slide_title">Emacs Org Mode</xt:use></h1>
+    <h1><xt:use types="string" label="slide_title">MX-RDF is an (RDF) framework
+      for Emacs (MX)</xt:use></h1>
     <xt:bag types="simple_list incremental_list anyElement" label="slide_body">
-      <p>paragraph ...</p>
+      <p>W3C grammars in elisp. MX-RDF features these grammars as the core of a
+      RDF compatible application for Emacs Org Mode (org-mode). Org Mode
+      provides a convenient API for describing various RDF based grammars in
+      both elisp and org files. Functions that operate on the grammars can
+      apply to a wide range of other applications and data management tasks,
+      with a powerful array of endpoints for data storage repositories
+      worldwide. </p>
       <xt:use types="simple_list" label="simple_list" currentType="ul"><ul>
           <xt:repeat minOccurs="1" label="items" maxOccurs="*">
             <xt:use types="li" label="item" currentType="li"><li>GNU Emacs Text
@@ -80,7 +87,13 @@
     <h1><xt:use types="string" label="slide_title">Resource Description
       Framework</xt:use></h1>
     <xt:bag types="simple_list incremental_list anyElement" label="slide_body">
-      <p>paragraph ...</p>
+      <p>Within the W3C corpus of Recommendations and Specifications are
+      several grammars for operating on Linked Data. Linked Data is a set of
+      initiatives promoting the facilitation of expressive data management and
+      access to remote data repositories located on both private servers and
+      also publically available. Representations of these grammars are possible
+      in elisp and several examples are provided, along with documentation and
+      example code.</p>
       <xt:use types="incremental_list" label="incremental_list"
       currentType="ul"><ul>
           <xt:repeat minOccurs="2" label="items" maxOccurs="*">
