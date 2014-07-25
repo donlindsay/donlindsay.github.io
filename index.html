@@ -105,6 +105,468 @@
         </ul>
       </xt:use></xt:bag>
     </div>
+  </xt:use><xt:use types="slide chapter_slide handout" label="slide"
+  currentType="slide">
+    <div class="slide">
+    <h1><xt:use types="string" label="slide_title">OWL2 RL</xt:use></h1>
+    <xt:bag types="simple_list incremental_list anyElement" label="slide_body">
+      <p>Class := IRI</p>
+
+      <p></p>
+
+      <p>Datatype := IRI</p>
+
+      <p></p>
+
+      <p>ObjectProperty := IRI</p>
+
+      <p></p>
+
+      <p>DataProperty := IRI</p>
+
+      <p></p>
+
+      <p>AnnotationProperty := IRI</p>
+
+      <p></p>
+
+      <p>Individual := NamedIndividual | AnonymousIndividual</p>
+
+      <p></p>
+
+      <p>NamedIndividual := IRI</p>
+
+      <p></p>
+
+      <p>AnonymousIndividual := nodeID</p>
+
+      <p></p>
+
+      <p>Literal := typedLiteral | stringLiteralNoLanguage |
+      stringLiteralWithLanguage</p>
+
+      <p>typedLiteral := lexicalForm '^^' Datatype</p>
+
+      <p>lexicalForm := quotedString</p>
+
+      <p>stringLiteralNoLanguage := quotedString</p>
+
+      <p>stringLiteralWithLanguage := quotedString languageTag</p>
+
+      <p></p>
+
+      <p></p>
+
+      <p></p>
+
+      <p>ObjectPropertyExpression := ObjectProperty | InverseObjectProperty</p>
+
+      <p></p>
+
+      <p>InverseObjectProperty := 'ObjectInverseOf' '(' ObjectProperty ')'</p>
+
+      <p></p>
+
+      <p>DataPropertyExpression := DataProperty</p>
+
+      <p></p>
+
+      <p></p>
+
+      <p></p>
+
+      <p>DataRange := Datatype | DataIntersectionOf</p>
+
+      <p></p>
+
+      <p>DataIntersectionOf := 'DataIntersectionOf' '(' DataRange DataRange {
+      DataRange } ')'</p>
+
+      <p></p>
+
+      <p></p>
+
+      <p></p>
+
+      <p>zeroOrOne := '0' | '1'</p>
+
+      <p></p>
+
+      <p>subClassExpression :=</p>
+
+      <p>Class other than owl:Thing |</p>
+
+      <p>subObjectIntersectionOf | subObjectUnionOf | ObjectOneOf |</p>
+
+      <p>subObjectSomeValuesFrom | ObjectHasValue |</p>
+
+      <p>DataSomeValuesFrom | DataHasValue</p>
+
+      <p></p>
+
+      <p>subObjectIntersectionOf := 'ObjectIntersectionOf' '('
+      subClassExpression subClassExpression { subClassExpression } ')'</p>
+
+      <p></p>
+
+      <p>subObjectUnionOf := 'ObjectUnionOf' '(' subClassExpression
+      subClassExpression { subClassExpression } ')'</p>
+
+      <p></p>
+
+      <p>subObjectSomeValuesFrom :=</p>
+
+      <p>'ObjectSomeValuesFrom' '(' ObjectPropertyExpression subClassExpression
+      ')' |</p>
+
+      <p>'ObjectSomeValuesFrom' '(' ObjectPropertyExpression owl:Thing ')'</p>
+
+      <p></p>
+
+      <p>superClassExpression :=</p>
+
+      <p>Class other than owl:Thing |</p>
+
+      <p>superObjectIntersectionOf | superComplementOf |</p>
+
+      <p>superObjectAllValuesFrom | ObjectHasValue | superObjectMaxCardinality
+      |</p>
+
+      <p>DataAllValuesFrom | DataHasValue | superDataMaxCardinality</p>
+
+      <p></p>
+
+      <p>superObjectIntersectionOf := 'ObjectIntersectionOf' '('
+      superClassExpression superClassExpression { superClassExpression } ')'</p>
+
+      <p></p>
+
+      <p>superObjectComplementOf := 'ObjectComplementOf' '(' subClassExpression
+      ')'</p>
+
+      <p></p>
+
+      <p>superObjectAllValuesFrom := 'ObjectAllValuesFrom' '('
+      ObjectPropertyExpression superClassExpression ')'</p>
+
+      <p></p>
+
+      <p>superObjectMaxCardinality :=</p>
+
+      <p>'ObjectMaxCardinality' '(' zeroOrOne ObjectPropertyExpression [
+      subClassExpression ] ')' |</p>
+
+      <p>'ObjectMaxCardinality' '(' zeroOrOne ObjectPropertyExpression
+      owl:Thing ')'</p>
+
+      <p></p>
+
+      <p>superDataMaxCardinality := 'DataMaxCardinality' '(' zeroOrOne
+      DataPropertyExpression [ DataRange ] ')' |</p>
+
+      <p></p>
+
+      <p>equivClassExpression :=</p>
+
+      <p>Class other than owl:Thing |</p>
+
+      <p>equivObjectIntersectionOf |</p>
+
+      <p>ObjectHasValue |</p>
+
+      <p>DataHasValue</p>
+
+      <p></p>
+
+      <p>equivObjectIntersectionOf := 'ObjectIntersectionOf' '('
+      equivClassExpression equivClassExpression { equivClassExpression } ')'</p>
+
+      <p></p>
+
+      <p>ObjectOneOf := 'ObjectOneOf' '(' Individual { Individual }')'</p>
+
+      <p></p>
+
+      <p>ObjectHasValue := 'ObjectHasValue' '(' ObjectPropertyExpression
+      Individual ')'</p>
+
+      <p></p>
+
+      <p>DataSomeValuesFrom := 'DataSomeValuesFrom' '(' DataPropertyExpression
+      { DataPropertyExpression } DataRange ')'</p>
+
+      <p></p>
+
+      <p>DataAllValuesFrom := 'DataAllValuesFrom' '(' DataPropertyExpression {
+      DataPropertyExpression } DataRange ')'</p>
+
+      <p></p>
+
+      <p>DataHasValue := 'DataHasValue' '(' DataPropertyExpression Literal
+      ')'</p>
+
+      <p></p>
+
+      <p></p>
+
+      <p></p>
+
+      <p>Axiom := Declaration | ClassAxiom | ObjectPropertyAxiom |
+      DataPropertyAxiom | DatatypeDefinition | HasKey | Assertion |
+      AnnotationAxiom</p>
+
+      <p></p>
+
+      <p></p>
+
+      <p></p>
+
+      <p>ClassAxiom := SubClassOf | EquivalentClasses | DisjointClasses</p>
+
+      <p></p>
+
+      <p>SubClassOf := 'SubClassOf' '(' axiomAnnotations subClassExpression
+      superClassExpression ')'</p>
+
+      <p></p>
+
+      <p>EquivalentClasses := 'EquivalentClasses' '(' axiomAnnotations
+      equivClassExpression equivClassExpression { equivClassExpression } ')'</p>
+
+      <p></p>
+
+      <p>DisjointClasses := 'DisjointClasses' '(' axiomAnnotations
+      subClassExpression subClassExpression { subClassExpression } ')'</p>
+
+      <p></p>
+
+      <p></p>
+
+      <p></p>
+
+      <p>ObjectPropertyAxiom :=</p>
+
+      <p>SubObjectPropertyOf | EquivalentObjectProperties |</p>
+
+      <p>DisjointObjectProperties | InverseObjectProperties |</p>
+
+      <p>ObjectPropertyDomain | ObjectPropertyRange |</p>
+
+      <p>FunctionalObjectProperty | InverseFunctionalObjectProperty |</p>
+
+      <p>IrreflexiveObjectProperty |</p>
+
+      <p>SymmetricObjectProperty | AsymmetricObjectProperty</p>
+
+      <p>TransitiveObjectProperty</p>
+
+      <p></p>
+
+      <p>SubObjectPropertyOf := 'SubObjectPropertyOf' '(' axiomAnnotations
+      subObjectPropertyExpression superObjectPropertyExpression ')'</p>
+
+      <p>subObjectPropertyExpression := ObjectPropertyExpression |
+      propertyExpressionChain</p>
+
+      <p>propertyExpressionChain := 'ObjectPropertyChain' '('
+      ObjectPropertyExpression ObjectPropertyExpression {
+      ObjectPropertyExpression } ')'</p>
+
+      <p>superObjectPropertyExpression := ObjectPropertyExpression</p>
+
+      <p></p>
+
+      <p>EquivalentObjectProperties := 'EquivalentObjectProperties' '('
+      axiomAnnotations ObjectPropertyExpression ObjectPropertyExpression {
+      ObjectPropertyExpression } ')'</p>
+
+      <p></p>
+
+      <p>DisjointObjectProperties := 'DisjointObjectProperties' '('
+      axiomAnnotations ObjectPropertyExpression ObjectPropertyExpression {
+      ObjectPropertyExpression } ')'</p>
+
+      <p></p>
+
+      <p>InverseObjectProperties := 'InverseObjectProperties' '('
+      axiomAnnotations ObjectPropertyExpression ObjectPropertyExpression ')'</p>
+
+      <p></p>
+
+      <p>ObjectPropertyDomain := 'ObjectPropertyDomain' '(' axiomAnnotations
+      ObjectPropertyExpression superClassExpression ')'</p>
+
+      <p></p>
+
+      <p>ObjectPropertyRange := 'ObjectPropertyRange' '(' axiomAnnotations
+      ObjectPropertyExpression superClassExpression ')'</p>
+
+      <p></p>
+
+      <p>FunctionalObjectProperty := 'FunctionalObjectProperty' '('
+      axiomAnnotations ObjectPropertyExpression ')'</p>
+
+      <p></p>
+
+      <p>InverseFunctionalObjectProperty := 'InverseFunctionalObjectProperty'
+      '(' axiomAnnotations ObjectPropertyExpression ')'</p>
+
+      <p></p>
+
+      <p>IrreflexiveObjectProperty := 'IrreflexiveObjectProperty' '('
+      axiomAnnotations ObjectPropertyExpression ')'</p>
+
+      <p></p>
+
+      <p>SymmetricObjectProperty := 'SymmetricObjectProperty' '('
+      axiomAnnotations ObjectPropertyExpression ')'</p>
+
+      <p></p>
+
+      <p>AsymmetricObjectProperty := 'AsymmetricObjectProperty' '('
+      axiomAnnotations ObjectPropertyExpression ')'</p>
+
+      <p></p>
+
+      <p>TransitiveObjectProperty := 'TransitiveObjectProperty' '('
+      axiomAnnotations ObjectPropertyExpression ')'</p>
+
+      <p></p>
+
+      <p></p>
+
+      <p></p>
+
+      <p>DataPropertyAxiom :=</p>
+
+      <p>SubDataPropertyOf | EquivalentDataProperties | DisjointDataProperties
+      |</p>
+
+      <p>DataPropertyDomain | DataPropertyRange | FunctionalDataProperty</p>
+
+      <p></p>
+
+      <p>SubDataPropertyOf := 'SubDataPropertyOf' '(' axiomAnnotations
+      subDataPropertyExpression superDataPropertyExpression ')'</p>
+
+      <p>subDataPropertyExpression := DataPropertyExpression</p>
+
+      <p>superDataPropertyExpression := DataPropertyExpression</p>
+
+      <p></p>
+
+      <p>EquivalentDataProperties := 'EquivalentDataProperties' '('
+      axiomAnnotations DataPropertyExpression DataPropertyExpression {
+      DataPropertyExpression } ')'</p>
+
+      <p></p>
+
+      <p>DisjointDataProperties := 'DisjointDataProperties' '('
+      axiomAnnotations DataPropertyExpression DataPropertyExpression {
+      DataPropertyExpression } ')'</p>
+
+      <p></p>
+
+      <p>DataPropertyDomain := 'DataPropertyDomain' '(' axiomAnnotations
+      DataPropertyExpression superClassExpression ')'</p>
+
+      <p></p>
+
+      <p>DataPropertyRange := 'DataPropertyRange' '(' axiomAnnotations
+      DataPropertyExpression DataRange ')'</p>
+
+      <p></p>
+
+      <p>FunctionalDataProperty := 'FunctionalDataProperty' '('
+      axiomAnnotations DataPropertyExpression ')'</p>
+
+      <p></p>
+
+      <p></p>
+
+      <p></p>
+
+      <p>DatatypeDefinition := 'DatatypeDefinition' '(' axiomAnnotations
+      Datatype DataRange ')'</p>
+
+      <p></p>
+
+      <p></p>
+
+      <p></p>
+
+      <p>HasKey := 'HasKey' '(' axiomAnnotations subClassExpression '(' {
+      ObjectPropertyExpression } ')' '(' { DataPropertyExpression } ')' ')'</p>
+
+      <p></p>
+
+      <p></p>
+
+      <p></p>
+
+      <p>Assertion :=</p>
+
+      <p>SameIndividual | DifferentIndividuals | ClassAssertion |</p>
+
+      <p>ObjectPropertyAssertion | NegativeObjectPropertyAssertion |</p>
+
+      <p>DataPropertyAssertion | NegativeDataPropertyAssertion</p>
+
+      <p></p>
+
+      <p>sourceIndividual := Individual</p>
+
+      <p>targetIndividual := Individual</p>
+
+      <p>targetValue := Literal</p>
+
+      <p></p>
+
+      <p>SameIndividual := 'SameIndividual' '(' axiomAnnotations Individual
+      Individual { Individual } ')'</p>
+
+      <p></p>
+
+      <p>DifferentIndividuals := 'DifferentIndividuals' '(' axiomAnnotations
+      Individual Individual { Individual } ')'</p>
+
+      <p></p>
+
+      <p>ClassAssertion := 'ClassAssertion' '(' axiomAnnotations
+      superClassExpression Individual ')'</p>
+
+      <p></p>
+
+      <p>ObjectPropertyAssertion := 'ObjectPropertyAssertion' '('
+      axiomAnnotations ObjectPropertyExpression sourceIndividual
+      targetIndividual ')'</p>
+
+      <p></p>
+
+      <p>NegativeObjectPropertyAssertion := 'NegativeObjectPropertyAssertion'
+      '(' axiomAnnotations ObjectPropertyExpression sourceIndividual
+      targetIndividual ')'</p>
+
+      <p></p>
+
+      <p>DataPropertyAssertion := 'DataPropertyAssertion' '(' axiomAnnotations
+      DataPropertyExpression sourceIndividual targetValue ')'</p>
+
+      <p></p>
+
+      <p>NegativeDataPropertyAssertion := 'NegativeDataPropertyAssertion' '('
+      axiomAnnotations DataPropertyExpression sourceIndividual targetValue ')'
+      </p>
+      <xt:use types="simple_list" label="simple_list" currentType="ul"><ul>
+          <xt:repeat minOccurs="1" label="items" maxOccurs="*">
+            <xt:use types="li" label="item" currentType="li"><li>OWL2 RL in
+                elisp</li>
+            </xt:use><xt:use types="li" label="item"
+                currentType="li"><li>MX-RDF support for OWL2 RL</li>
+            </xt:use></xt:repeat>
+        </ul>
+      </xt:use></xt:bag>
+    </div>
   </xt:use></xt:repeat>
 </body>
 </html>
