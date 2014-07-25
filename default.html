@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<?xtiger template="http://www.w3.org/Amaya/Templates/slides.xtd" version="1.0" templateVersion="1.0"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+ xmlns:xt="http://ns.inria.org/xtiger" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+  <title><xt:use types="string" label="slide_title" initial="true">MX-RDF
+    Resource Descriptions for Emacs</xt:use></title>
+  <meta name="generator" content="amaya 9.54, see http://www.w3.org/Amaya/" />
+  <link rel="stylesheet" type="text/css" media="screen, projection"
+  href="http://www.w3.org/Amaya/Templates/slidy.css" />
+  <link rel="stylesheet" type="text/css" media="screen, projection"
+  href="http://www.w3.org/Amaya/Templates/slidy-blue.css" title="Blue" />
+  <link rel="stylesheet" type="text/css" media="print"
+  href="http://www.w3.org/Amaya/Templates/print.css" />
+  <script type="text/javascript"
+  src="http://www.w3.org/Amaya/Templates/slidy.js">
+  </script>
+  <script type="text/javascript"
+  src="http://www.w3.org/Amaya/Templates/slidy-toc.js">
+  </script>
+  <style type="text/css">
+     /* your custom style rules */
+     dd {margin-top: 0.3em}
+     dd p {margin-top: 0.3em; margin-bottom: 0.3em}
+     </style>
+</head>
+
+<body xml:lang="en" lang="en">
+
+<div class="background">
+<p> </p>
+</div>
+
+<div class="bottom">
+<p> </p>
+</div>
+
+<div class="slide cover">
+
+<div class="cover-image">
+<p> </p>
+</div>
+
+<div class="cover-content">
+<h1><xt:use types="string" label="title" initial="true">Title</xt:use></h1>
+
+<p><xt:use types="string" label="author" initial="true">Author</xt:use></p>
+<address>
+  &lt;<xt:use types="string" label="email" initial="true">email</xt:use>&gt; 
+</address>
+
+<p><xt:use types="string" label="event" initial="true">Event, day month
+year</xt:use></p>
+</div>
+
+<div class="cover-bottom">
+<p> </p>
+</div>
+</div>
+<xt:repeat minOccurs="2" label="slides" maxOccurs="*">
+  <xt:use types="slide chapter_slide handout" label="a_slide" currentType="div">
+    <div class="slide">
+    <h1><xt:use types="string" label="slide_title" initial="true">Slide
+    Heading</xt:use></h1>
+    <xt:bag types="simple_list incremental_list anyElement" label="slide_body">
+      <p>paragraph ...</p>
+      <xt:use types="simple_list" label="simple_list" currentType="ul"><ul>
+          <xt:repeat minOccurs="1" label="items" maxOccurs="*">
+            <xt:use types="li" label="item" currentType="li"><li>item ...</li>
+            </xt:use><xt:use types="li" label="item" currentType="li"><li>item
+                ...</li>
+            </xt:use></xt:repeat>
+        </ul>
+      </xt:use></xt:bag>
+    </div>
+  </xt:use><xt:use types="slide chapter_slide handout" label="a_slide"
+  currentType="div">
+    <div class="slide">
+    <h1><xt:use types="string" label="slide_title" initial="true">Slide
+    Heading</xt:use></h1>
+    <xt:bag types="simple_list incremental_list anyElement" label="slide_body">
+      <p>paragraph ...</p>
+      <xt:use types="incremental_list" label="incremental_list"
+      currentType="ul"><ul>
+          <xt:repeat minOccurs="2" label="items" maxOccurs="*">
+            <xt:use types="li" label="item" currentType="li"><li
+              class="incremental">item ...</li>
+            </xt:use><xt:use types="li" label="item" currentType="li"><li
+              class="incremental">item ...</li>
+            </xt:use></xt:repeat>
+        </ul>
+      </xt:use></xt:bag>
+    </div>
+  </xt:use></xt:repeat>
+</body>
+</html>
