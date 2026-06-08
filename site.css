@@ -35,11 +35,12 @@ h3 { font-size: 1.05em; margin: 1.1em 0 0.35em; }
 .sub { margin: 0.4em 0 0.9em 1.1em; border-left: 1px solid #173a3a; padding-left: 1em; }
 .sub h3 { margin-top: 0.2em; }
 
-/* compact 2-up gallery for the secondary screencaps (hero stays full-width) */
-.gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1em; margin: 1.4em 0; }
+/* compact 3-up gallery: the hero is one of three equal screencaps, not a full-width banner */
+.gallery { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.1em; margin: 1.4em 0; }
 .gallery figure { margin: 0; }
 .gallery img { margin: 0; max-width: 100%; border-width: 6px; }
 .gallery figcaption { margin-top: 0.4em; }
+@media (max-width: 820px) { .gallery { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 560px) { .gallery { grid-template-columns: 1fr; } }
 .shot-todo { text-align: center; border: 1px dashed #2a6; color: #5fae8e;
              padding: 2.6em 1em; margin: 1.3em auto; border-radius: 4px; max-width: 95%; }
