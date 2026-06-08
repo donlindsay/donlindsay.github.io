@@ -32,31 +32,13 @@
       "@id": "#devlog",
       "@type": "skos:Concept",
       "skos:prefLabel": "Devlog",
-      "skos:scopeNote": "Dated development logs \u2014 newest first."
-    },
-    {
-      "@id": "#reference",
-      "@type": "skos:Concept",
-      "skos:prefLabel": "Reference",
-      "skos:scopeNote": "Audits, serving, and test reports.",
+      "skos:scopeNote": "Dated development logs \u2014 newest first.",
       "skos:narrower": [
         {
-          "@id": "#audit",
+          "@id": "#reference",
           "@type": "skos:Concept",
-          "skos:prefLabel": "Audit & Review",
-          "skos:scopeNote": "Hardware/software audits and code review."
-        },
-        {
-          "@id": "#deploy",
-          "@type": "skos:Concept",
-          "skos:prefLabel": "Deploy & Serving",
-          "skos:scopeNote": "Serving engines and ops."
-        },
-        {
-          "@id": "#telemetry",
-          "@type": "skos:Concept",
-          "skos:prefLabel": "Telemetry & Reports",
-          "skos:scopeNote": "Benchmarks, diagnostics, stress reports."
+          "skos:prefLabel": "Reference",
+          "skos:scopeNote": "Supporting material \u2014 audits, serving, and test reports."
         }
       ]
     }
