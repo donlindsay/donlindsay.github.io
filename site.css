@@ -11,23 +11,24 @@
 .docrow { margin: 0.35em 0; }
 .cap { text-align: center; font-size: 14px; }
 
-/* "built with" technology badges — theme pills, no external images */
-.badges { margin: 1.1em 0 1.7em; line-height: 2.4; }
-.badges a {
+/* "built with" technology badges — colorful shields.io images.
+   These rules override main.css's global `img` (grayscale animation + 10px border). */
+.badges { margin: 1.1em 0 1.7em; line-height: 2.1; }
+.badges a { display: inline-block; border: 0; background: none; padding: 0; margin: 0; }
+.badges img {
   display: inline-block;
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  color: #ccff66;
-  background: #04120b;
-  border: 1px solid #235;
-  border-color: #1d4a3a;
+  margin: 0 5px 7px 0;
+  border: 0;
   border-radius: 3px;
-  padding: 2px 9px;
-  margin: 0 6px 4px 0;
-  text-decoration: none;
-  transition: background 0.12s, border-color 0.12s, color 0.12s;
+  background: transparent;
+  max-width: none;
+  vertical-align: middle;
+  animation: none;
+  -webkit-filter: none;
+  filter: none;
+  transition: opacity 0.12s;
 }
-.badges a:hover { background: #0b2a1a; border-color: #ccff66; color: #eaffb0; }
+.badges a:hover img { opacity: 0.82; }
 
 /* nested SKOS group: narrower concepts indented under their broader concept */
 h3 { font-size: 1.05em; margin: 1.1em 0 0.35em; }
