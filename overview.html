@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Stack — Overview — IRON &amp; FEATHERS</title>
+<meta name="description" content="What the AI Stack is, at a glance.">
+<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="site.css">
+<link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+<meta name="dcterms.license" content="https://creativecommons.org/licenses/by/4.0/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "AI Stack \u2014 Overview",
+  "name": "AI Stack \u2014 Overview",
+  "description": "What the AI Stack is, at a glance.",
+  "datePublished": "2026-06-08",
+  "dateModified": "2026-06-08",
+  "author": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "copyrightHolder": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "copyrightYear": 2026,
+  "articleSection": "Overview & Guides",
+  "keywords": [
+    "AI Stack",
+    "AllegroGraph",
+    "llama.cpp",
+    "RAG",
+    "Overview & Guides"
+  ],
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "IRON & FEATHERS",
+    "url": "https://donlindsay.github.io/"
+  },
+  "url": "https://donlindsay.github.io/overview.html",
+  "additionalType": "http://rdfs.org/sioc/ns#Post",
+  "about": {
+    "@type": "Thing",
+    "name": "Overview & Guides"
+  }
+}
+</script>
+</head>
+<body>
+<table class="hdr"><tr><td><h1><a href="index.html">IRON &amp; FEATHERS</a></h1></td></tr><tr><td align="right">AI&nbsp;Stack &mdash; local-first KG+LLM workbench<br><a href="https://github.com/donlindsay">github.com/donlindsay</a></td></tr></table>
+<p class="crumb"><a href="index.html">&larr; index</a> <span class="muted">/ Overview &amp; Guides</span></p>
+<article>
+<h1>AI Stack — Overview</h1>
+<blockquote>id: <code>urn:kg:doc:overview</code> · source: guide · date: 2026-06-08</blockquote>
+<p>The <strong>AI Stack</strong> is a local-first, offline-capable AI workbench: a knowledge graph and a language model running entirely on one Windows + WSL2 machine, driven by a guitar-pedalboard desktop UI. No cloud is required for the core loop — chat, retrieval, and the knowledge graph all run on-box.</p>
+<h2>At a glance</h2>
+<ul><li><strong>One runtime — llama.cpp.</strong> <code>llama-server</code> (built for CUDA sm_120 / RTX 5070 Blackwell) serves</li></ul>
+<p>  both chat (Nemotron-3-Nano 4B, with Twin-Llama as a second model) and, through an in-process   embedding adapter, the vectors behind retrieval. Ollama, vLLM, n8n and ComfyUI are optional,   shelved add-ins.</p>
+<ul><li><strong>AllegroGraph 9.0.1</strong> is the knowledge graph and RAG store — documents, agent memory, and</li></ul>
+<p>  provenance live as RDF, with native vector search over them.</p>
+<ul><li><strong>Pedalboard UI.</strong> A native Avalonia app (skin: <em>Easy</em>) presents the stack as effect pedals —</li></ul>
+<p>  Chat, Ask, Search, Graph, Image, KG, VXA (voice/audio), and <strong>SHELL</strong> (an agentic coding console).</p>
+<ul><li><strong>Provenance everywhere.</strong> Agent actions and shell operations are logged to a chain-of-custody</li></ul>
+<p>  graph (PROV) — the stack can explain what it did and why.</p>
+<h2>What it does</h2>
+<ul><li><strong>Chat</strong> with a local model, with optional long-term memory.</li><li><strong>RAG</strong> over your documents (<code>data.docs</code>) with cited answers.</li><li><strong>Knowledge graph</strong> queries (SPARQL / natural-language-to-SPARQL) over a federated AllegroGraph.</li><li><strong>Image generation</strong> via a Stable Diffusion worker.</li><li><strong>Agentic shell</strong> — the SHELL pedal runs real commands and edits files under a permission gate,</li></ul>
+<p>  and can even modify the stack's own source (self-building) with a human approving every change.</p>
+<p>See the <strong>Guide</strong> to run it and the <strong>Architecture</strong> for how it fits together.</p>
+</article>
+<hr><p>As I have been given, so I freely give:<br>The documentation on this site is licensed under <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative&nbsp;Commons Attribution&nbsp;4.0 International (CC&nbsp;BY&nbsp;4.0)</a>. Code and bundled components (AllegroGraph, Llama/Nemotron weights, &amp;c.) retain their own licenses.</p><h4>&copy; 2026 Don Lindsay</h4>
+</body>
+</html>
