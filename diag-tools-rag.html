@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tool-call + RAG Diagnostic — IRON &amp; FEATHERS</title>
+<meta name="description" content="Tool-call + RAG diagnostic.">
+<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="site.css">
+<link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+<meta name="dcterms.license" content="https://creativecommons.org/licenses/by/4.0/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Tool-call + RAG Diagnostic",
+  "name": "Tool-call + RAG Diagnostic",
+  "description": "Tool-call + RAG diagnostic.",
+  "datePublished": "2026-06-08",
+  "dateModified": "2026-06-08",
+  "author": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "copyrightHolder": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "copyrightYear": 2026,
+  "articleSection": "Telemetry & Reports",
+  "keywords": [
+    "AI Stack",
+    "AllegroGraph",
+    "llama.cpp",
+    "RAG",
+    "Telemetry & Reports"
+  ],
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "IRON & FEATHERS",
+    "url": "https://donlindsay.github.io/"
+  },
+  "url": "https://donlindsay.github.io/diag-tools-rag.html",
+  "additionalType": "http://rdfs.org/sioc/ns#Post",
+  "about": {
+    "@type": "Thing",
+    "name": "Telemetry & Reports"
+  }
+}
+</script>
+</head>
+<body>
+<table class="hdr"><tr><td><h1><a href="index.html">IRON &amp; FEATHERS</a></h1></td></tr><tr><td align="right">AI&nbsp;Stack &mdash; local-first KG+LLM workbench<br><a href="https://github.com/donlindsay">github.com/donlindsay</a></td></tr></table>
+<p class="crumb"><a href="index.html">&larr; index</a> <span class="muted">/ Telemetry &amp; Reports</span></p>
+<article>
+<h1>Tool-call + RAG Diagnostic</h1>
+<p>_Per-quadrant probes that isolate WHERE tool-calling and RAG break. Tool-call: parser probe (direct engine API) -&gt; selection -&gt; args/result-use -&gt; restraint -&gt; output hygiene. RAG: retrieval relevance -&gt; distractor precision -&gt; abstain -&gt; read-after-write -&gt; grounded generation. Tool-call probes read <code>data.docs</code>; RAG probes use a seeded <code>data.diag</code> (1 target + 3 distractors)._</p>
+<h2>Part A — tool-calls (per quadrant)</h2>
+<table class="md"><thead><tr><th>Quadrant</th><th>parser</th><th>KB select</th><th>query+use</th><th>restraint</th><th>hygiene</th></tr></thead><tbody><tr><td>OllamaxNemotron</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>OllamaxTwin</td><td>✅</td><td>✅</td><td>❌</td><td>❌</td><td>✅</td></tr><tr><td>vLLMxNemotron</td><td>✅</td><td>✅</td><td>❌</td><td>✅</td><td>✅</td></tr><tr><td>vLLMxTwin</td><td>⚠️</td><td>⚠️</td><td>⚠️</td><td>⚠️</td><td>⚠️</td></tr></tbody></table>
+<h2>Part B — RAG structural (data.diag, engine-agnostic)</h2>
+<ul><li>✅ <strong>B0_relevance</strong> — 4 hits; top='Zephyr build server' score=0.882</li><li>✅ <strong>B1_distractor</strong> — top='Zephyr build server' score=0.829</li><li>✅ <strong>B2_ranking</strong> — off-topic top=0.462 &lt; on-topic top=0.882 — nomic's 0.4 floor is permissive (off-topic still returns 4 hits), so abstention is generation's job (see B5)</li><li>✅ <strong>B3_read_after_write</strong> — cites=2 :: The diagnostic read‑after‑write probe code is RAVEN‑7731‑DEL</li></ul>
+<h2>Part B — RAG grounded generation (per quadrant)</h2>
+<table class="md"><thead><tr><th>Quadrant</th><th>grounded+cited</th><th>abstain</th><th>correct-source</th></tr></thead><tbody><tr><td>OllamaxNemotron</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>OllamaxTwin</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>vLLMxNemotron</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>vLLMxTwin</td><td>⚠️</td><td>⚠️</td><td>⚠️</td></tr></tbody></table>
+<h2>Failures (with payloads)</h2>
+<ul><li><strong>OllamaxTwin / A:query_use</strong> — fired=['graph_query', 'graph_query'] used_digit=False (6.5s) :: The knowledge base contains no documents. The SPAR</li><li><strong>OllamaxTwin / A:restraint</strong> — fired=['save_fact'] (2.0s)</li><li><strong>vLLMxNemotron / A:query_use</strong> — fired=['graph_query'] used_digit=False (13.0s) :: I'm sorry, but I couldn't retrieve the count of do</li></ul>
+<h2>Not tested — engine unavailable (NOT a pass)</h2>
+<ul><li><strong>vLLMxTwin</strong> — NOT TESTED — vLLM is not serving 'twin-llama' (resolved to ollama); probing would measure ollama, not vLLM.</li></ul>
+<h2>Notes</h2>
+<ul><li>A0 parser probe hits the engine API directly with a single tool schema, isolating the tool-call parser (vLLM <code>llama_nemotron_json</code> / <code>llama3_json</code>; Ollama native) from the agent loop. A1-A3 drive the real <code>run_agent</code> (<code>use_memory=False</code>).</li><li><code>knowledge_base</code> is hardwired to <code>data.docs</code>, so A1 asserts the tool FIRES (selection), not that <code>data.docs</code> holds the answer. RAG grounding is tested separately on <code>data.diag</code>.</li><li>Seed target: Zephyr build server @ rack B12 (maintainer Dana Okonkwo); distractors share the topic but differ in rack/datacenter/maintainer.</li></ul>
+</article>
+<hr><p>As I have been given, so I freely give:<br>The documentation on this site is licensed under <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative&nbsp;Commons Attribution&nbsp;4.0 International (CC&nbsp;BY&nbsp;4.0)</a>. Code and bundled components (AllegroGraph, Llama/Nemotron weights, &amp;c.) retain their own licenses.</p><h4>&copy; 2026 Don Lindsay</h4>
+</body>
+</html>

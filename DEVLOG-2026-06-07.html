@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEVLOG SNAPSHOT — AI Stack — 2026-06-07 — IRON &amp; FEATHERS</title>
+<meta name="description" content="Pedal control-surface redesign.">
+<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="site.css">
+<link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+<meta name="dcterms.license" content="https://creativecommons.org/licenses/by/4.0/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "DEVLOG SNAPSHOT \u2014 AI Stack \u2014 2026-06-07",
+  "name": "DEVLOG SNAPSHOT \u2014 AI Stack \u2014 2026-06-07",
+  "description": "Pedal control-surface redesign.",
+  "datePublished": "2026-06-07",
+  "dateModified": "2026-06-08",
+  "author": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "copyrightHolder": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "copyrightYear": 2026,
+  "articleSection": "Devlogs",
+  "keywords": [
+    "AI Stack",
+    "AllegroGraph",
+    "llama.cpp",
+    "RAG",
+    "Devlogs"
+  ],
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "IRON & FEATHERS",
+    "url": "https://donlindsay.github.io/"
+  },
+  "url": "https://donlindsay.github.io/DEVLOG-2026-06-07.html",
+  "additionalType": "http://rdfs.org/sioc/ns#Post",
+  "about": {
+    "@type": "Thing",
+    "name": "Devlogs"
+  }
+}
+</script>
+</head>
+<body>
+<table class="hdr"><tr><td><h1><a href="index.html">IRON &amp; FEATHERS</a></h1></td></tr><tr><td align="right">AI&nbsp;Stack &mdash; local-first KG+LLM workbench<br><a href="https://github.com/donlindsay">github.com/donlindsay</a></td></tr></table>
+<p class="crumb"><a href="index.html">&larr; index</a> <span class="muted">/ Devlogs</span></p>
+<article>
+<h1>DEVLOG SNAPSHOT — AI Stack — 2026-06-07</h1>
+<p>A private, offline-first knowledge-and-tools workbench running natively in WSL2 Ubuntu. Two pillars: <strong>AllegroGraph</strong> (symbolic brain, CPU/RAM) + <strong>Ollama</strong> (neural shell, GPU/VRAM), with a diffusers Stable Diffusion worker and a FastAPI/Gradio + Avalonia frontend.</p>
+<h2>1. Last 24 hours</h2>
+<ul><li><strong>Pedalboard:</strong> rebranded the image pedal ComfyUI → Stable Diffusion; built a generic swappable-pedal mechanism (double-click → SWAP PEDAL palette). Pairs: SD ↔ ComfyUI (image), SerpAPI ↔ n8n (search).</li><li><strong>gowf wildland-fire KG:</strong> cloned, loaded 12 Turtle files into <code>data.fire</code> (named graphs per file), federated under fed.kb.</li><li><strong>KnowWhereGraph:</strong> imported the modular KWG ontology into <code>schema.kwg</code> (572 classes); authored a gowf↔KWG alignment; wired live SPARQL SERVICE federation.</li><li><strong>Remediation R1–R7:</strong> governance set — KWG canonical, gowf sandbox. Reversed the alignment to gowf ⊑ KWG, deprecated duplicates, adopted KWG-SHACL as the conformance gate (measured the sandbox as structurally disjoint).</li><li><strong>Cloud council:</strong> grew the cloud web tier from 5 → 8 peers — serpapi, ddgs, perplexity, claude, openai, then +openrouter (gemini-2.5-flash), +huggingface (llama-3.3-70b), +ollama (gpt-oss:120b via the linked box). Fan-out in parallel, synthesized locally by nemotron.</li><li><strong>Keys:</strong> provisioned SerpAPI, OpenRouter, Hugging Face, Ollama Cloud; linked the box to ollama.com via its device pubkey; closed the Perplexity rotation end-to-end; retired/scrubbed gitinfo.txt.</li><li><strong>Credential inventory:</strong> materialized the vendor → access → service → model dependency graph into the registry repo with custody events.</li><li><strong>n8n eviction:</strong> replaced the 3 n8n-routed paths (Claude, Perplexity, web search) with direct vendor calls; then folded n8n into <code>aistack/n8n.py</code> and made the Search pedal a SerpAPI ↔ n8n swap.</li><li><strong>Purge &amp; disk:</strong> deleted n8n-data, the Python runner, and nvm Node 22 (~3.2 GB); reclaimed ~22 GB total (apt cache, unused llama3.1:8b model, dead Tabby cache, log bloat, legacy frontend repos); added an rsyslog filter to silence WSLg syslog spam.</li></ul>
+<h2>2. Full software audit</h2>
+<ul><li><strong>OS / kernel:</strong> Ubuntu on WSL2, kernel 6.6.87.2-microsoft-standard-WSL2. No Docker in the runtime (installed, 0 containers).</li><li><strong>Symbolic tier:</strong> AllegroGraph 9.0.1 (free, 5M-triple license) embedding Allegro CL; SPARQL + RDFS++ reasoning + Prolog (custody lineage) + SHACL + native vector store.</li><li><strong>Neural tier:</strong> Ollama 0.30.0 — local models nemotron-3-nano:4b (agent + council synthesis), nomic-embed-text (embeddings); + Ollama Cloud (gpt-oss:120b) via the linked device key.</li><li><strong>Image tier:</strong> diffusers Stable Diffusion worker — torch 2.11.0+cu128 (sm_120 kernels), diffusers 0.38, transformers 4.57.6; socket-activated + idle-exit to free VRAM; multi-checkpoint.</li><li><strong>Backend:</strong> Python 3.12.3 — FastAPI 0.136.3, uvicorn 0.49.0, Gradio 6.16.0, requests 2.33.1, pydantic 2.13.4, numpy 2.4.6, ddgs 9.14.4, matplotlib, pillow. Package <code>aistack</code> (core, skills, council, federation, rag, memory, custody, registry, jsonld, sdgen, n8n).</li><li><strong>Frontend:</strong> Avalonia / .NET 9 desktop "pedalboard" (Windows) + the Gradio web console (:7860) + the FastAPI native API (:8765).</li><li><strong>Tooling:</strong> GitHub CLI 2.93.0, sqlite3 3.45.1, node v18.19.1 (distro; pandoc dependency only), rsyslog 8.2312.0.</li><li><strong>Evicted / removed:</strong> n8n + its nvm Node 22, ComfyUI, Tabby (code-LLM cache), Docker (unused).</li></ul>
+<h2>3. Feature set (current)</h2>
+<ul><li>Local tool-using agent (nemotron) — tools: web_search, perplexity_search, <strong>web_council</strong> (8-peer), knowledge_base (RAG), graph_query (NL→SPARQL), sparql_query, graph_facts, save_fact, forget, ingest_text, generate_image, chart, graph_image, ask_claude / ask_openai / ask_openrouter / ask_huggingface / ask_ollama, ask_table, llm_enrich, llm_list.</li><li>8-peer <strong>cloud web-tier council</strong> (3 search + 5 model families) synthesized locally.</li><li>AllegroGraph <strong>federation</strong> (fed.kb / fed.agent) with query-time RDFS++ reasoning and materialization.</li><li><strong>RAG</strong> — AG-native vector retrieval (nomic-embed) over data.docs.</li><li><strong>Memory</strong> — mem.agent vector store (conversational recall).</li><li><strong>Chain-of-custody</strong> — prov.custody, with Prolog-computed lineage.</li><li><strong>DCAT registry</strong> + a materialized credential dependency graph.</li><li><strong>SHACL</strong> conformance gate (KWG-SHACL).</li><li><strong>Image generation</strong> — socket-activated SD worker.</li><li><strong>Voice (VXA)</strong> — Whisper STT + TTS with device routing.</li><li>Domain knowledge graphs: gowf wildland-fire (data.fire) + KWG ontology (schema.kwg).</li></ul>
+<h2>4. Potential feature set</h2>
+<ul><li><strong>File interpreter</strong> (multi-format ingester): RSS/CSV/JSON-LD/KML/PDF/docs → interpret to canonical KWG, SHACL-gated; Inciweb RSS = the reference case (R5).</li><li><strong>Reaper pedal</strong> — VRAM/GPU work-share manager (SD_IDLE + Ollama keep-alive knobs).</li><li>gowf→KWG <strong>R5 ETL</strong> — RSS DataFeedItems → sosa:NIFC_FireObservation instances.</li><li>Run <strong>SHACL validation</strong> as an ingestion acceptance gate.</li><li>Expand the gowf↔KWG <strong>alignment</strong> (more owl:equivalentClass mappings).</li><li><strong>Live KWG federation</strong> (when UCSB's GraphDB license is renewed).</li><li><strong>Publish</strong> the stack / gowf to GitHub.</li><li>Curated <strong>council subsets</strong> per query (latency/cost control), multi-key Ollama keyring.</li></ul>
+<h2>5. Novel UI developments</h2>
+<ul><li><strong>Guitar-pedalboard metaphor</strong> — each capability is an effect pedal: Chat=Overdrive, Ask=Reverb, Search=SerpAPI, Graph=EQ, Image=Stable Diffusion, KG=Chorus, VXA=Volume. Stomp to engage (selects its page); LED shows that service's health.</li><li><strong>Swappable pedals</strong> — double-click any slot with alternates to pop a "SWAP PEDAL" palette and re-mount a different pedal in place (generic <code>PedalVariants</code> mechanism). Live pairs: Image SD↔ComfyUI, Search SerpAPI↔n8n; legacy skins honestly show an OFF LED.</li><li><strong>Per-pedal knobs</strong> — a MAIN/OPTS/SYSTEM mode knob + a live parameter knob with a value readout (steps, docs, hits, wpm).</li><li><strong>ACCESS knobs</strong> — WEB (OFF/LOCAL/CLOUD, where CLOUD convenes the 8-peer council) and SHELL (NONE/UBUNTU/WIN).</li><li><strong>Cloud council as UI</strong> — engaging WEB→CLOUD fans a query to 8 peers, synthesized locally.</li><li>Brushed-metal / walnut textures, glossy enclosures, theme skins, a scripted demo auto-tour, and the VXA voice pedal.</li></ul>
+<h2>6. Full hardware audit</h2>
+<ul><li><strong>CPU:</strong> AMD Ryzen 9 9900X (Zen 5), 12 cores presented to WSL; AVX-512 (incl. bf16, VNNI, VP2INTERSECT), SHA-NI, AES.</li><li><strong>Memory:</strong> 23 GiB RAM in WSL (capped from a 31 GB host to protect AllegroGraph), 8 GiB swap. Headroom: ~16 GiB available at audit.</li><li><strong>GPU:</strong> NVIDIA GeForce RTX 5070 — 12 GB GDDR7, <strong>Blackwell sm_120 (compute capability 12.0)</strong>, driver 595.79, CUDA 13.2. Idle ~4% at audit.</li><li><strong>Disk:</strong> 1 TB (1007 G) — 59 G used, 898 G free (7%).</li><li><strong>Silicon mapping:</strong> symbolic (AllegroGraph, Whisper int8) on CPU/RAM; neural (Ollama LLM, SD worker) on GPU/VRAM. VRAM is freed on SD idle-exit and Ollama idle-unload so the 12 GB is shared, not contended.</li></ul>
+</article>
+<hr><p>As I have been given, so I freely give:<br>The documentation on this site is licensed under <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative&nbsp;Commons Attribution&nbsp;4.0 International (CC&nbsp;BY&nbsp;4.0)</a>. Code and bundled components (AllegroGraph, Llama/Nemotron weights, &amp;c.) retain their own licenses.</p><h4>&copy; 2026 Don Lindsay</h4>
+</body>
+</html>

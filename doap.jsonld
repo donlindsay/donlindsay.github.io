@@ -1,0 +1,26 @@
+{
+  "@context": {
+    "doap": "http://usefulinc.com/ns/doap#",
+    "foaf": "http://xmlns.com/foaf/0.1/"
+  },
+  "@type": "doap:Project",
+  "doap:name": "AI Stack",
+  "doap:shortdesc": "Local-first AllegroGraph + LLM (llama.cpp x Nemotron) workbench, pedalboard UI.",
+  "doap:homepage": "https://donlindsay.github.io/",
+  "doap:programming-language": [
+    "Python",
+    "C#"
+  ],
+  "doap:os": "Linux (WSL2)",
+  "doap:wiki": "https://donlindsay.github.io/",
+  "dct:license": "https://creativecommons.org/licenses/by/4.0/",
+  "doap:screenshots": [
+    "https://donlindsay.github.io/assets/hero.png",
+    "https://donlindsay.github.io/assets/reaper.png",
+    "https://donlindsay.github.io/assets/graph.png"
+  ],
+  "doap:maintainer": {
+    "@type": "foaf:Person",
+    "foaf:name": "Don Lindsay"
+  }
+}

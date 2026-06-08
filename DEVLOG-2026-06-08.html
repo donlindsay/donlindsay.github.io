@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEVLOG SNAPSHOT — AI Stack — 2026-06-08 — IRON &amp; FEATHERS</title>
+<meta name="description" content="Second engine, 6-slot board, Reaper console.">
+<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="site.css">
+<link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+<meta name="dcterms.license" content="https://creativecommons.org/licenses/by/4.0/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "DEVLOG SNAPSHOT \u2014 AI Stack \u2014 2026-06-08",
+  "name": "DEVLOG SNAPSHOT \u2014 AI Stack \u2014 2026-06-08",
+  "description": "Second engine, 6-slot board, Reaper console.",
+  "datePublished": "2026-06-08",
+  "dateModified": "2026-06-08",
+  "author": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "copyrightHolder": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "copyrightYear": 2026,
+  "articleSection": "Devlogs",
+  "keywords": [
+    "AI Stack",
+    "AllegroGraph",
+    "llama.cpp",
+    "RAG",
+    "Devlogs"
+  ],
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "IRON & FEATHERS",
+    "url": "https://donlindsay.github.io/"
+  },
+  "url": "https://donlindsay.github.io/DEVLOG-2026-06-08.html",
+  "additionalType": "http://rdfs.org/sioc/ns#Post",
+  "about": {
+    "@type": "Thing",
+    "name": "Devlogs"
+  }
+}
+</script>
+</head>
+<body>
+<table class="hdr"><tr><td><h1><a href="index.html">IRON &amp; FEATHERS</a></h1></td></tr><tr><td align="right">AI&nbsp;Stack &mdash; local-first KG+LLM workbench<br><a href="https://github.com/donlindsay">github.com/donlindsay</a></td></tr></table>
+<p class="crumb"><a href="index.html">&larr; index</a> <span class="muted">/ Devlogs</span></p>
+<article>
+<h1>DEVLOG SNAPSHOT — AI Stack — 2026-06-08</h1>
+<p>A private, offline-first knowledge-and-tools workbench running natively in WSL2 Ubuntu. Two pillars: <strong>AllegroGraph</strong> (symbolic brain, CPU/RAM) + local LLM engines (neural shell, GPU/VRAM), with a diffusers Stable Diffusion worker and a FastAPI/Gradio + Avalonia frontend. This snapshot covers the local-LLM expansion: a second serving engine, a two-axis pedalboard, and the Reaper VRAM/performance console.</p>
+<h2>1. This session</h2>
+<ul><li><strong>vLLM "Twin Llama" serving — LIVE on Blackwell sm_120 (RTX 5070).</strong> Stood up a second local</li></ul>
+<p>  serving engine beside Ollama. The hard part was sm_120 (compute 12.0): pinned an isolated venv to   <strong>vllm 0.22.1 + torch 2.11.0+cu130 + torchvision 0.26.0+cu130</strong>, put the bundled cu13 nvidia libs   on <code>LD_LIBRARY_PATH</code>, and — crucially — <strong>bypassed flashinfer</strong> (its cu13 cccl headers won't   JIT-compile on Blackwell) with <code>VLLM_USE_FLASHINFER_SAMPLER=0</code>, after which vLLM auto-selects the   prebuilt FLASH_ATTN backend. Served the <strong>ungated <code>unsloth/Llama-3.2-3B-Instruct</code></strong> mirror under a   stable <code>twin-llama</code> alias (the gated meta-llama repo wants a license click). <code>--gpu-memory-utilization   0.70</code> keeps ~1.3GB WSLg headroom. systemd unit <strong><code>ai-vllm</code></strong> (on-demand, not enabled at boot).</p>
+<ul><li><strong>On-demand vLLM lifecycle.</strong> <code>localllm.set_engine()</code> best-effort <code>systemctl start ai-vllm</code> on swap</li></ul>
+<p>  to vLLM, <code>stop</code> on swap away — only one local engine resident at a time. Verified: vLLM→Ollama   releases the GPU (946 MiB used / ~11 GB free).</p>
+<ul><li><strong>6-slot pedalboard restructure.</strong> The board went from 7 flat pedals to a 6-slot board (0 top → 5</li></ul>
+<p>  bottom): <strong>0 Engine</strong> (Ollama/vLLM/Tabby), <strong>1 Model</strong> (Nemotron/Twin Llama), <strong>2 Knowledge</strong>   (one synthesized pedal whose carousel faces are Ask/Search/Graph/KG), <strong>3 Media</strong> (Stable   Diffusion/ComfyUI), <strong>4 Reaper</strong>, <strong>5 Audio/VXA</strong>. Architecturally, pedal-slot is now <strong>decoupled   from content-tab</strong> (<code>PedalSpec.Tab</code>, <code>_activeSlot</code>, <code>ContentTab</code>): Engine+Model both drive the Chat   pane; Knowledge's active face selects its pane; the 7 original panes are reused, with one new Reaper   pane added. Engine and Model are independent axes — a <strong>free engine × model matrix</strong>.</p>
+<ul><li><strong>Engine × model free matrix (backend).</strong> <code>localllm</code> carries two axes; <code>_resolve(engine,model)</code> is</li></ul>
+<p>  the single source of truth shared by <code>generate()</code> and <code>bench()</code>. Live pairs: Ollama×Nemotron and   vLLM×Twin Llama; cross-cells fall back gracefully to Ollama (Ollama currently holds only   nemotron-3-nano:4b, so Ollama×Twin Llama falls back until a llama is pulled). <code>POST /local-engine</code>   now takes optional engine and/or model.</p>
+<ul><li><strong>Reaper — VRAM manager + performance console (slot 4).</strong> Upgraded from a status readout to a</li></ul>
+<p>  full dashboard: <strong>live GPU telemetry</strong> (VRAM bar, util %, temp, power via nvidia-smi), a clickable   <strong>3×2 engine × model status matrix</strong> (live / loadable / fallback / placeholder, each showing its   resolution), on-demand <strong>Load/Release vLLM</strong>, and <strong>per-cell benchmarks</strong>. Benchmarks use Ollama's   native nanosecond timing counters for exact metrics — measured <strong>132.8 tok/s · TTFT 26ms · load   159ms</strong> for nemotron; the vLLM path uses wall-clock + completion tokens. New endpoints: <code>GET /gpu</code>,   <code>GET /local-matrix</code>, <code>POST /local-bench</code>.</p>
+<ul><li><strong>Housekeeping.</strong> Closed the GitHub n8n-credential PAT rotation (user revoked provider-side; the</li></ul>
+<p>  old token in the n8n-export is inert). Recorded a standing demo-capture choreography directive   (natural scroll/click/type; always keep the producing pedal in view and tie chat-pane output to the   pedal's look + scroll + carousel state) — folded into a Demo.cs refresh.</p>
+<h2>2. Software / feature deltas</h2>
+<ul><li>Backend (<code>/opt/aistack/main</code>, commit <code>1875114</code>): <code>aistack/localllm.py</code> (engine+model axes, _resolve,</li></ul>
+<p>  matrix, gpu_stats, bench), <code>api.py</code> (/gpu, /local-matrix, /local-bench, optional engine/model on   /local-engine), <code>config.py</code> (LOCAL_MODEL, OLLAMA_TWIN_MODEL, VLLM_* ); serving infra under   <code>deploy/vllm/</code> (serve.sh + ai-vllm.service + README), committed earlier.</p>
+<ul><li>App (Avalonia, commit <code>074259d</code>): <code>MainWindow.axaml.cs</code> (6-slot PedalVariants, slot/tab decoupling,</li></ul>
+<p>  Reaper matrix page), <code>MainWindow.axaml</code> (+Reaper TabItem), <code>ApiClient.cs</code> (SetLocalModelAsync,   GetGpuAsync, GetMatrixAsync, BenchAsync). Demo.cs refresh tracked separately.</p>
+<h2>3. Hardware / GPU</h2>
+<p>AMD Ryzen 9 9900X (12 cores in WSL), 23 GiB RAM + 8 GiB swap, <strong>RTX 5070 12 GB GDDR7 Blackwell sm_120</strong>, driver 595.79, CUDA 13.2. The 12 GB GPU is now shared by three potential tenants (Ollama nemotron, vLLM twin-llama, Stable Diffusion); Reaper enforces single-resident swapping. Idle footprint ~0.9 GB; nemotron resident ~adds ~1 GB; vLLM 3B at util 0.70 ~10.6 GB.</p>
+<h2>4. Outstanding / next</h2>
+<ul><li>Pull a small Llama into Ollama to make the Ollama×Twin-Llama matrix cell genuinely distinct</li></ul>
+<p>  (currently graceful-fallback to nemotron).</p>
+<ul><li>Load vLLM and benchmark the vLLM×Twin-Llama cell for a real cross-engine tok/s comparison.</li><li>Demo.cs refresh (6-slot + natural-capture choreography) in flight as a separate task.</li><li>Tabby remains a placeholder engine skin (not yet wired).</li><li>Reaper could grow auto-reaping (evict the idle engine under VRAM pressure) and history sparklines.</li></ul>
+</article>
+<hr><p>As I have been given, so I freely give:<br>The documentation on this site is licensed under <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative&nbsp;Commons Attribution&nbsp;4.0 International (CC&nbsp;BY&nbsp;4.0)</a>. Code and bundled components (AllegroGraph, Llama/Nemotron weights, &amp;c.) retain their own licenses.</p><h4>&copy; 2026 Don Lindsay</h4>
+</body>
+</html>

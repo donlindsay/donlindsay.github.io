@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stress + telemetry kit — IRON &amp; FEATHERS</title>
+<meta name="description" content="Telemetry kit readme.">
+<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="site.css">
+<link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+<meta name="dcterms.license" content="https://creativecommons.org/licenses/by/4.0/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Stress + telemetry kit",
+  "name": "Stress + telemetry kit",
+  "description": "Telemetry kit readme.",
+  "datePublished": "2026-06-08",
+  "dateModified": "2026-06-08",
+  "author": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "copyrightHolder": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "copyrightYear": 2026,
+  "articleSection": "Telemetry & Reports",
+  "keywords": [
+    "AI Stack",
+    "AllegroGraph",
+    "llama.cpp",
+    "RAG",
+    "Telemetry & Reports"
+  ],
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "IRON & FEATHERS",
+    "url": "https://donlindsay.github.io/"
+  },
+  "url": "https://donlindsay.github.io/telemetry-README.html",
+  "additionalType": "http://rdfs.org/sioc/ns#Post",
+  "about": {
+    "@type": "Thing",
+    "name": "Telemetry & Reports"
+  }
+}
+</script>
+</head>
+<body>
+<table class="hdr"><tr><td><h1><a href="index.html">IRON &amp; FEATHERS</a></h1></td></tr><tr><td align="right">AI&nbsp;Stack &mdash; local-first KG+LLM workbench<br><a href="https://github.com/donlindsay">github.com/donlindsay</a></td></tr></table>
+<p class="crumb"><a href="index.html">&larr; index</a> <span class="muted">/ Telemetry &amp; Reports</span></p>
+<article>
+<h1>Stress + telemetry kit</h1>
+<p>Tools for stress-testing the local-LLM stack and capturing GPU/system telemetry.</p>
+<h2>Scripts</h2>
+<ul><li><strong><code>restart-cold.sh</code></strong> — clean ordered restart of the whole stack to a <em>cold baseline</em></li></ul>
+<p>  (reload AllegroGraph, clear Ollama VRAM, reset vLLM, app services up, vLLM left down).</p>
+<ul><li><strong><code>capture.sh</code></strong> — background telemetry sampler:</li><li><code>capture.sh start &lt;label&gt; [interval_s]</code> → begins GPU (nvidia-smi) + system (load/RAM) CSVs under <code>runs/</code></li><li><code>capture.sh stop</code> · <code>capture.sh status</code> · <code>capture.sh list</code></li><li><strong><code>stress.sh</code></strong> — load generator via the ai-api (:8765):</li><li><code>stress.sh bench &lt;engine&gt; &lt;model&gt; [n]</code> — sequential benches, avg tok/s</li><li><code>stress.sh load &lt;conc&gt; &lt;count&gt; [eng] [mdl]</code> — N requests at given concurrency → req/s</li><li><code>stress.sh soak &lt;seconds&gt; &lt;conc&gt; [eng] [mdl]</code> — keep workers busy for a duration</li><li><code>stress.sh matrix [--vllm]</code> — one bench per non-placeholder engine×model cell</li><li><code>stress.sh vllm on|off</code> — load / release the vLLM service</li></ul>
+<h2>Typical run</h2>
+<pre><code>
+cd /opt/aistack/telemetry
+./restart-cold.sh                 # optional: reset to cold baseline
+./capture.sh start run1 1         # begin telemetry @1s
+./stress.sh soak 60 4             # 60s, 4 concurrent workers on ollama×nemotron
+./capture.sh stop                 # writes runs/&lt;ts&gt;_run1.gpu.csv + .sys.csv
+</code></pre>
+<p>To stress vLLM: <code>./stress.sh vllm on</code> (waits for load), then <code>./stress.sh soak 60 8 vllm twin-llama</code>, then <code>./stress.sh vllm off</code>.</p>
+<h2>CSV columns</h2>
+<ul><li><strong>gpu</strong>: <code>timestamp, mem.used MiB, mem.free MiB, util.gpu %, util.mem %, temp °C, power W, sm clock MHz, mem clock MHz</code></li><li><strong>sys</strong>: <code>epoch, load1, mem_used_mib, mem_avail_mib</code></li></ul>
+<h2>Engine × model cells (free matrix)</h2>
+<p><code>ollama×nemotron</code> (live) · <code>ollama×twin-llama</code> (fallback→nemotron until a llama is pulled) · <code>vllm×twin-llama</code> (live once loaded) · <code>vllm×nemotron</code> (fallback) · <code>tabby×*</code> (placeholder).</p>
+</article>
+<hr><p>As I have been given, so I freely give:<br>The documentation on this site is licensed under <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative&nbsp;Commons Attribution&nbsp;4.0 International (CC&nbsp;BY&nbsp;4.0)</a>. Code and bundled components (AllegroGraph, Llama/Nemotron weights, &amp;c.) retain their own licenses.</p><h4>&copy; 2026 Don Lindsay</h4>
+</body>
+</html>

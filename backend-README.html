@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Stack Console (`main`) — IRON &amp; FEATHERS</title>
+<meta name="description" content="The aistack backend — agent, skills, engine matrix.">
+<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="site.css">
+<link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+<meta name="dcterms.license" content="https://creativecommons.org/licenses/by/4.0/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "AI Stack Console (`main`)",
+  "name": "AI Stack Console (`main`)",
+  "description": "The aistack backend \u2014 agent, skills, engine matrix.",
+  "datePublished": "2026-06-08",
+  "dateModified": "2026-06-08",
+  "author": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "copyrightHolder": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "copyrightYear": 2026,
+  "articleSection": "Overview & Guides",
+  "keywords": [
+    "AI Stack",
+    "AllegroGraph",
+    "llama.cpp",
+    "RAG",
+    "Overview & Guides"
+  ],
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "IRON & FEATHERS",
+    "url": "https://donlindsay.github.io/"
+  },
+  "url": "https://donlindsay.github.io/backend-README.html",
+  "additionalType": "http://rdfs.org/sioc/ns#Post",
+  "about": {
+    "@type": "Thing",
+    "name": "Overview & Guides"
+  }
+}
+</script>
+</head>
+<body>
+<table class="hdr"><tr><td><h1><a href="index.html">IRON &amp; FEATHERS</a></h1></td></tr><tr><td align="right">AI&nbsp;Stack &mdash; local-first KG+LLM workbench<br><a href="https://github.com/donlindsay">github.com/donlindsay</a></td></tr></table>
+<p class="crumb"><a href="index.html">&larr; index</a> <span class="muted">/ Overview &amp; Guides</span></p>
+<article>
+<h1>AI Stack Console (<code>main</code>)</h1>
+<p>One backend, three frontends. The agent, skills, knowledge-graph helpers and AllegroGraph-backed memory live once in the <strong><code>aistack</code></strong> package; the <strong>desktop</strong> (Qt), <strong>web</strong> (Gradio) and <strong>cli</strong> (terminal) frontends are thin shells over it.</p>
+<pre><code>
+./run.sh                 # desktop — native Qt window (default)
+./run.sh web             # Gradio  → http://localhost:7860
+./run.sh cli             # terminal REPL
+./run.sh cli &quot;how many documents mention OpenAI?&quot;   # one-shot
+./run.sh api             # FastAPI → http://127.0.0.1:8765  (for native front ends)
+</code></pre>
+<p><code>run.sh</code> forces <code>QT_QPA_PLATFORM=xcb</code> (Qt6-Wayland under WSLg segfaults; X11 is stable). Under the hood it just runs <code>venv/bin/python main.py &lt;frontend&gt;</code>.</p>
+<h2>Layout</h2>
+<pre><code>
+main.py                 # entry point: dispatches to a frontend (lazy import)
+api.py                  # FastAPI shim over the backend — for native front ends
+aistack/                # the shared backend — single source of truth
+  config.py             #   endpoints, repos, the model
+  core.py               #   HTTP, Ollama, AllegroGraph helpers, service health
+  skills.py             #   the 13 agent skills + tool schema + NL→SPARQL + charts/graphs
+  agent.py              #   the tool-calling loop + AllegroGraph-backed memory
+  ops.py                #   richer page operations for the form UIs
+frontends/
+  desktop.py            # PySide6/Qt: frameless dark skin, sidebar, 6 pages, status bar
+  web.py                # Gradio: 6 tabs
+  cli.py                # terminal: truecolor REPL (slash-commands) or one-shot
+</code></pre>
+<p>Only the chosen toolkit is imported, so <code>cli</code> needs <strong>neither Qt nor Gradio</strong>.</p>
+<h2>Native front ends (the API)</h2>
+<p><code>main.py api</code> serves the backend over plain HTTP at <code>http://127.0.0.1:8765</code> so a <strong>native Windows UI</strong> (Avalonia/WPF/Tauri/anything) can drive the same agent and skills — the backend stays Python, the UI is any language. WSL2 forwards <code>localhost</code>, so a Windows client reaches it with no extra setup. <code>start-stack.sh</code> brings it up as <code>systemd: ai-api</code>.</p>
+<table class="md"><thead><tr><th>Route</th><th>Body</th><th>Returns</th></tr></thead><tbody><tr><td><code>GET /status</code></td><td>—</td><td><code>{service: up?}</code></td></tr><tr><td><code>POST /chat</code></td><td><code>{message,history,use_memory}</code></td><td><code>{text, images:[{url,path}]}</code></td></tr><tr><td><code>POST /chat/stream</code></td><td>same</td><td>SSE: <code>tool_call</code> / <code>tool_result</code> / <code>final</code></td></tr><tr><td><code>POST /rag</code> <code>/search</code> <code>/extract</code> <code>/sparql</code> <code>/nlq</code> <code>/image</code></td><td>per form</td><td>the skill's result</td></tr><tr><td><code>GET /file?path=</code></td><td>—</td><td>a generated image (ComfyUI output + <code>.charts</code>)</td></tr></tbody></table>
+<p>Image-producing skills return a <code>data:</code> URL (chart/graph) or a fetchable URL (ComfyUI), so a native client shows them inline. A runnable <strong>Avalonia C# starter</strong> that consumes this API lives at <code>C:\Users\donal\ai-stack-native\</code> (see its README).</p>
+<h2>The agent</h2>
+<p>The agent runs on a <strong>free engine × model matrix</strong> (the pedalboard's Reaper, slots 0 + 1): <strong>Engine ∈ {Ollama, llama.cpp}</strong> × <strong>Model ∈ {Nemotron, Twin-Llama}</strong>, selectable independently. The default is <strong>llama.cpp × Nemotron</strong> (<code>nemotron-3-nano:4b</code>, served on the GPU by <code>llama-server</code> built for CUDA sm_120). <code>localllm._resolve()</code> maps each pair to the live backend with a graceful Ollama fallback; the single-resident 12 GB GPU is governed by Reaper (engaging a GPU engine evicts the others). vLLM was the prior GPU engine and is now <strong>shelved</strong> (dormant; swap-in-able via <code>set_engine("vllm")</code>).</p>
+<p>The loop is a single bounded tool-calling loop (Ollama <code>/api/chat</code>, or the engine's OpenAI API for llama.cpp/vLLM). There is <strong>no router</strong> — the <code>SYSTEM</code> prompt handles restraint, so the model answers general questions directly and only calls a tool when it genuinely helps.</p>
+<p>Capabilities are wired in as <strong>13 skills</strong>:</p>
+<p><code>web_search</code> · <code>knowledge_base</code> · <code>extract_url</code> · <code>generate_image</code> · <code>sparql_query</code> · <code>graph_query</code> (NL→SPARQL) · <code>ask_table</code> (tables) · <code>chart</code> (bar/line/pie) · <code>graph_image</code> (subgraph picture) · <code>ask_claude</code> / <code>perplexity_search</code> (cloud) · <code>save_fact</code> · <code>forget</code></p>
+<p>Image-producing skills (<code>generate_image</code>, <code>chart</code>, <code>graph_image</code>) render <strong>inline in the desktop chat</strong>, scaled to the box.</p>
+<p><strong>Memory</strong> is AllegroGraph-backed: each exchange is embedded (nomic-embed-text) into the <code>agent_memory</code> repo and semantically recalled before each reply (toggle per frontend). <code>save_fact</code> promotes durable facts to RDF triples in <code>kg_facts</code>; <code>forget</code> deletes matches.</p>
+<p><strong>NLQ</strong> implements AllegroGraph's native-NLQ <em>design</em> (schema hint + few-shot NL↔SPARQL pairs) scriptably — AG 9.0.1 exposes no programmatic NLQ API. nemotron emits a single SPARQL query that runs against the chosen repo.</p>
+<h2>CLI commands</h2>
+<p><code>/help</code> <code>/status</code> <code>/memory on|off</code> <code>/repo [name]</code> <code>/clear</code> <code>/rag &lt;q&gt;</code> <code>/search &lt;q&gt;</code> <code>/nlq &lt;q&gt;</code> <code>/sparql &lt;repo&gt; &lt;q&gt;</code> <code>/extract &lt;url&gt;…</code> <code>/quit</code> — anything else goes to the agent.</p>
+<h2>Notes</h2>
+<ul><li><strong>No CORS</strong> — runs on the stack host and calls the n8n webhooks + AllegroGraph directly.</li><li><strong>Routerless, single-model</strong> — nemotron does tool selection itself; the <code>SYSTEM</code> prompt</li></ul>
+<p>  steers <em>restraint</em> (answer directly when no tool is needed) and <em>synthesis</em> (use tool   results in one or two tight sentences). A shared <code>IDENTITY</code> keeps one consistent voice.</p>
+<ul><li><strong>AllegroGraph LLM predicates</strong> — <code>askMyDocuments</code> (documents + citations) and</li></ul>
+<p>  <code>askForTable</code> (tables) run natively on nemotron, the only local model that passes   Franz's function-call parser for both (others emit prose → <code>car of "" not listp</code>).   <code>ask_table</code> keeps a portable Ollama→JSON fallback for consistent columns.</p>
+<ul><li><strong>Cloud skills</strong> (<code>ask_claude</code>, <code>perplexity_search</code>) send data off-box; everything</li></ul>
+<p>  else is local-only.</p>
+<ul><li><strong>Desktop UI</strong> — frameless dark window with a custom title bar (Wayland-under-WSLg</li></ul>
+<p>  segfaults, so X11/xcb), a UI-scale slider, and the horse app icon. The status bar polls   all five services every 10 s.</p>
+<p>Supersedes the standalone <code>../legacy/console</code> (web) and <code>../legacy/desktop</code> (Qt) apps, whose backends were duplicated. Part of the local AI stack — see <code>../README.md</code>, <code>../GUIDE.md</code>.</p>
+</article>
+<hr><p>As I have been given, so I freely give:<br>The documentation on this site is licensed under <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative&nbsp;Commons Attribution&nbsp;4.0 International (CC&nbsp;BY&nbsp;4.0)</a>. Code and bundled components (AllegroGraph, Llama/Nemotron weights, &amp;c.) retain their own licenses.</p><h4>&copy; 2026 Don Lindsay</h4>
+</body>
+</html>

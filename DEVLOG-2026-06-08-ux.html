@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEVLOG — AI Stack — Pedalboard UX + Reaper console overhaul (2026-06-08, session 2) — IRON &amp; FEATHERS</title>
+<meta name="description" content="Pedalboard UX, Reaper console overhaul.">
+<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="site.css">
+<link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+<meta name="dcterms.license" content="https://creativecommons.org/licenses/by/4.0/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "DEVLOG \u2014 AI Stack \u2014 Pedalboard UX + Reaper console overhaul (2026-06-08, session 2)",
+  "name": "DEVLOG \u2014 AI Stack \u2014 Pedalboard UX + Reaper console overhaul (2026-06-08, session 2)",
+  "description": "Pedalboard UX, Reaper console overhaul.",
+  "datePublished": "2026-06-08",
+  "dateModified": "2026-06-08",
+  "author": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "copyrightHolder": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "copyrightYear": 2026,
+  "articleSection": "Devlogs",
+  "keywords": [
+    "AI Stack",
+    "AllegroGraph",
+    "llama.cpp",
+    "RAG",
+    "Devlogs"
+  ],
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "IRON & FEATHERS",
+    "url": "https://donlindsay.github.io/"
+  },
+  "url": "https://donlindsay.github.io/DEVLOG-2026-06-08-ux.html",
+  "additionalType": "http://rdfs.org/sioc/ns#Post",
+  "about": {
+    "@type": "Thing",
+    "name": "Devlogs"
+  }
+}
+</script>
+</head>
+<body>
+<table class="hdr"><tr><td><h1><a href="index.html">IRON &amp; FEATHERS</a></h1></td></tr><tr><td align="right">AI&nbsp;Stack &mdash; local-first KG+LLM workbench<br><a href="https://github.com/donlindsay">github.com/donlindsay</a></td></tr></table>
+<p class="crumb"><a href="index.html">&larr; index</a> <span class="muted">/ Devlogs</span></p>
+<article>
+<h1>DEVLOG — AI Stack — Pedalboard UX + Reaper console overhaul (2026-06-08, session 2)</h1>
+<p>A private, offline-first knowledge-and-tools workbench: an Avalonia/.NET "pedalboard" desktop app (<code>C:\Users\donal\ai-stack-native</code>) over a FastAPI backend (<code>/opt/aistack/main</code>, on <code>127.0.0.1:8765</code>) running natively in WSL2 Ubuntu — AllegroGraph, Ollama, vLLM, a Stable-Diffusion worker. This session was UI/UX: redesigning the pedal control surfaces, turning Tabby into a skill, two backend correctness fixes, a full overhaul of the Reaper engine×model console, and giving the app a real desktop identity (taskbar icon + Jump List). App commits <code>3be15db → d3205c7</code>; backend commits <code>cbf458f → 90681dd</code>.</p>
+<h2>1. Pedal MAIN / OPTS / SYSTEM redesign — guitar-pedal control surfaces</h2>
+<p>Each pedal's sub-pages were plain Avalonia forms; they're now decisionable pedal-style controls. New partial <code>MainWindow.Controls.cs</code> holds a declarative <code>ControlSpec</code> (Knob / Switch / Selector / Dial / Button / Text) + renderers (<code>OptKnobCtl</code>, <code>OptSwitchCtl</code>, <code>OptDialCtl</code>, <code>OptButtonCtl</code>, <code>OptTextCtl</code>, <code>BuildControlSurface</code>, <code>HeadCell</code>) and per-tab specs <code>OptsSpec(tab)</code> / <code>SysSpec(tab)</code>. One spec per content-tab drives BOTH the OPTS surface and the pedal's headline controls; every control writes an existing state field so all downstream API calls are unchanged. Mapping: numeric → knobs, fixed enums → rotary selectors, booleans → toggle switches, actions → footswitches, free text stays as pedal-framed text fields. <code>BuildPedal</code> renders the MODE knob + up to two headline controls (resolved from the active variant's content-tab, so the Knowledge 4-face carousel swaps them); only the owner slot of a content-tab surfaces its headline (Engine shows Chat's memory/trace, Model none).</p>
+<h2>2. Tabby — reclassified from chat engine to code-assist skill</h2>
+<p>Tabby is no longer an engine. It's a dedicated slot-6 skill: <code>sk_tabby</code> routes to the active Engine × Model (Ollama/vLLM × Nemotron/Twin-Llama) via <code>localllm.generate</code> with a code-focused prompt, tagging the reply with the engine:model that served it. The Tabby pedal's "Try in Chat" footswitch jumps to the Chat frame and prefills a coding prompt. Qwen coder weights removed (~3.5 GB); Tabby dropped from the Reaper engine axis (engines = ollama, vllm).</p>
+<h2>3. Backend correctness fixes</h2>
+<ul><li><strong>vLLM VRAM lifecycle</strong> — <code>set_engine(vllm)</code> now <code>_ollama_evict()</code>s (POST keep_alive:0 + poll</li></ul>
+<p>  /api/ps) BEFORE starting vLLM, so its KV-cache init no longer dies with "No available memory for   the cache blocks"; releasing vLLM uses <code>_vllm_stop()</code> (systemctl stop → SIGKILL the cgroup, since   vLLM outlives SIGTERM and pins ~11.7 GB). <code>ai-vllm</code> unit gained KillMode=mixed / SIGINT /   TimeoutStopSec=10 / FinalKillSignal=SIGKILL.</p>
+<ul><li><strong>Memory recall fidelity</strong> — <code>memory.recall_facts()</code> reads the user's durable <code>save_fact</code> triples</li></ul>
+<p>  from <code>data.facts</code> as exact lines; <code>run_agent</code> injects them last, labelled as outranking the fuzzy   vector memory, so a self-poisoned past answer can never override a stored triple. Vector recall   threshold 0.4 → 0.5.</p>
+<h2>4. Reaper Main — engine × model console overhaul (the big one)</h2>
+<p>The Reaper page is a VRAM manager + 2×2 Engine(Ollama/vLLM) × Model(Nemotron/Twin-Llama) matrix.</p>
+<ul><li><strong>Removed the legacy Load/Release vLLM buttons</strong> — the 2×2 cells already load vLLM (vLLM cell) and</li></ul>
+<p>  release it (Ollama cell) on engage. Action row is now Bench active / Bench all / Refresh footswitches.</p>
+<ul><li><strong>Cell label = what the button ENGAGES</strong>, not the fallback runtime. <code>matrix()</code> sets <code>resolves_to</code></li></ul>
+<p>  from <code>_engaged_label()</code> so the non-native cells read <code>vllm:nemotron</code> and <code>ollama:twin-llama</code>   (were both misleadingly <code>ollama:nemotron</code>); a <code>runs_on</code> field carries the real fallback runtime.</p>
+<ul><li><strong>Status is relative to the ENGAGED cell — exactly one LIVE.</strong> Was static per pairing (two could</li></ul>
+<p>  read LIVE; LIVE never moved). <code>_cell_status(engine, model, active)</code> via <code>_native_up</code>/<code>_native_exists</code>:   <strong>LIVE</strong> (green — engaged + natively serving, only one) · <strong>READY</strong> (cyan — engine up, click to   switch instantly) · <strong>LOADABLE</strong> (amber — native backend exists but its engine is stopped) ·   <strong>FALLBACK</strong> (muted — no native backend; runs on Ollama nemotron). Verified live: engaging   vLLM×Twin → it goes LIVE and Ollama×Nemotron → READY; switching back stops vLLM so its cell → LOADABLE.</p>
+<ul><li><strong>Realtime</strong> — the matrix + GPU telemetry are hooked into the existing 3 s poll while the Reaper</li></ul>
+<p>  page is visible, so badges and tok/s track live state without a manual Refresh.</p>
+<ul><li><strong>Performance line graphs</strong> — Throughput (tok/s) and First-token (TTFT ms) plotted per cell from a</li></ul>
+<p>  rolling 30-sample bench history, colour-coded with a legend; page wrapped in a ScrollViewer.</p>
+<h2>5. App desktop identity</h2>
+<ul><li><strong>Horse taskbar icon</strong> — reused the system-tray image (<code>.ai-stack/icon.ico</code>, a horse running with</li></ul>
+<p>  fire) repacked multi-size into <code>assets/horse.ico</code> (exe ApplicationIcon) + <code>horse-256.png</code> (Avalonia   Window.Icon → taskbar/title bar).</p>
+<ul><li><strong>Taskbar Jump List</strong> — <code>JumpList.cs</code> (shell COM interop, explicit AppUserModelID) adds Tasks on</li></ul>
+<p>  right-click: Web Console, Gruff, AllegroGraph, Terminal (CLI), Restart API. AssemblyTitle/Product =   "AI Stack".</p>
+<ul><li><strong>System-tray utility update</strong> — <code>.ai-stack/ai-stack-tray.ps1</code>: removed the evicted n8n (:5678) and</li></ul>
+<p>  ComfyUI (:8188) Open entries and the dead "Stop n8n + runner" command; added "Restart API".</p>
+<h2>6. Ops note (recorded to memory)</h2>
+<p><code>ai-api</code> (FastAPI :8765) and <code>ai-console</code> (:7860) are <strong>transient</strong> systemd units created by <code>start-stack.sh</code> via <code>systemd-run</code> — a bare <code>systemctl stop ai-api</code> DESTROYS the unit ("Unit not found" on restart). Bounce the API with <code>sudo bash /opt/aistack/start-stack.sh</code> (or the validated stop → reset-failed → systemd-run recreate), never <code>systemctl restart ai-api</code>.</p>
+<h2>7. Commits</h2>
+<ul><li>App (<code>ai-stack-native</code>): <code>5740940</code> pedal control surfaces + Tabby slot · <code>ca89fa8</code> Reaper drop</li></ul>
+<p>  Load/Release + reform cells + perf graphs · <code>717f59d</code> subtitle trim · <code>205158f</code> horse icon +   Jump List · <code>1a4fe13</code> realtime matrix poll · <code>d3205c7</code> READY status style.</p>
+<ul><li>Backend (<code>/opt/aistack/main</code>): <code>cbf458f</code> vLLM VRAM lifecycle · <code>de2719a</code> Tabby skill · <code>509f615</code></li></ul>
+<p>  memory recall · <code>732f3ba</code>/<code>b041ce8</code>/<code>90681dd</code> Reaper matrix label + status taxonomy.</p>
+<h2>8. Next plan</h2>
+<p>Comprehensive test battery: each Reaper quadrant (engine × model) benchmarked alone, then a free-for-all competition across 20 whole-stack user scenarios, telemetry-graded.</p>
+</article>
+<hr><p>As I have been given, so I freely give:<br>The documentation on this site is licensed under <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative&nbsp;Commons Attribution&nbsp;4.0 International (CC&nbsp;BY&nbsp;4.0)</a>. Code and bundled components (AllegroGraph, Llama/Nemotron weights, &amp;c.) retain their own licenses.</p><h4>&copy; 2026 Don Lindsay</h4>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Stack — native front end (Avalonia starter) — IRON &amp; FEATHERS</title>
+<meta name="description" content="The Avalonia desktop pedalboard app.">
+<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="site.css">
+<link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+<meta name="dcterms.license" content="https://creativecommons.org/licenses/by/4.0/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "AI Stack \u2014 native front end (Avalonia starter)",
+  "name": "AI Stack \u2014 native front end (Avalonia starter)",
+  "description": "The Avalonia desktop pedalboard app.",
+  "datePublished": "2026-06-08",
+  "dateModified": "2026-06-08",
+  "author": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "copyrightHolder": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "copyrightYear": 2026,
+  "articleSection": "Overview & Guides",
+  "keywords": [
+    "AI Stack",
+    "AllegroGraph",
+    "llama.cpp",
+    "RAG",
+    "Overview & Guides"
+  ],
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "IRON & FEATHERS",
+    "url": "https://donlindsay.github.io/"
+  },
+  "url": "https://donlindsay.github.io/app-README.html",
+  "additionalType": "http://rdfs.org/sioc/ns#Post",
+  "about": {
+    "@type": "Thing",
+    "name": "Overview & Guides"
+  }
+}
+</script>
+</head>
+<body>
+<table class="hdr"><tr><td><h1><a href="index.html">IRON &amp; FEATHERS</a></h1></td></tr><tr><td align="right">AI&nbsp;Stack &mdash; local-first KG+LLM workbench<br><a href="https://github.com/donlindsay">github.com/donlindsay</a></td></tr></table>
+<p class="crumb"><a href="index.html">&larr; index</a> <span class="muted">/ Overview &amp; Guides</span></p>
+<article>
+<h1>AI Stack — native front end (Avalonia starter)</h1>
+<p>A minimal <strong>Avalonia (C#/.NET 8)</strong> desktop client for the local AI Stack. It talks to the Python backend purely over HTTP — the <strong>FastAPI shim</strong> at <code>http://127.0.0.1:8765</code> (<code>/opt/aistack/main/api.py</code>) — so the UI and the backend stay completely decoupled. WSL2 forwards <code>localhost</code>, so this Windows app reaches the in-WSL API with no extra setup.</p>
+<p>This is a <strong>starter</strong>, deliberately small: a dark-skinned chat window that</p>
+<ul><li>streams your question to the agent (<code>POST /chat</code>),</li><li>renders the reply, and <strong>shows chart / graph / generated images inline</strong> (decoded from</li></ul>
+<p>  the data-URI the API returns),</p>
+<ul><li>shows live <strong>service status</strong> in the header (<code>GET /status</code>).</li></ul>
+<p>It proves the architecture end to end. The other capabilities (RAG, web search, extract, SPARQL, NL→SPARQL) are already exposed by the shim — add a tab per endpoint the same way.</p>
+<h2>Prerequisites</h2>
+<ul><li><strong>.NET 8 SDK</strong> — https://dotnet.microsoft.com/download (VS 2022 installs it for you)</li><li>The stack running in WSL with the API up:</li></ul>
+<p>  ```bash</p>
+<p>  # in WSL (Ubuntu, as root)   /opt/aistack/main/run.sh web      # or the full ./start-stack.sh — both bring up ai-api</p>
+<p>  # or just the API alone:   cd /opt/aistack/main &amp;&amp; ./venv/bin/python main.py api</p>
+<p>  ``<code>   Confirm from Windows:  </code>curl http://127.0.0.1:8765/status`</p>
+<h2>Run it</h2>
+<p><strong>VS Code</strong> (with the <em>C# Dev Kit</em> + <em>Avalonia for VS Code</em> extensions): open this folder, then <code>dotnet run</code> in the terminal — or F5 to debug. The Avalonia extension gives you a live XAML previewer.</p>
+<p><strong>Visual Studio 2022</strong> (install the <em>Avalonia for Visual Studio</em> extension for the designer): open <code>AiStackNative.csproj</code> and press F5.</p>
+<p><strong>Command line:</strong></p>
+<pre><code>
+cd C:\Users\donal\ai-stack-native
+dotnet run
+</code></pre>
+<h2>Files</h2>
+<table class="md"><thead><tr><th>File</th><th>Role</th></tr></thead><tbody><tr><td><code>Program.cs</code></td><td>Avalonia entry point</td></tr><tr><td><code>App.axaml(.cs)</code></td><td>app + Fluent dark theme</td></tr><tr><td><code>MainWindow.axaml(.cs)</code></td><td>the chat window + inline image decode + status</td></tr><tr><td><code>ApiClient.cs</code></td><td><code>HttpClient</code> wrapper over the shim (<code>/chat</code>, <code>/status</code>)</td></tr><tr><td><code>app.manifest</code></td><td>per-monitor DPI awareness</td></tr></tbody></table>
+<h2>Why Avalonia</h2>
+<p>Chosen because it's first-class in <strong>both Visual Studio and VS Code</strong>, its CSS-like styling suits a custom "guitar-pedal" skin, and it can host a WebView later to embed <strong>Gruff</strong> live. Swapping to WPF is a drop-in on the same shim (Windows-only, best VS designer, native WebView2) — only this C# project changes; the Python backend does not.</p>
+<h2>Done</h2>
+<ul><li>✅ Six tabs: <strong>Chat</strong> (streaming SSE — live <code>tool_call</code>/<code>tool_result</code> trace + inline</li></ul>
+<p>  chart/graph images), <strong>Ask</strong> (RAG), <strong>Search</strong>, <strong>Graph</strong> (NL→SPARQL), <strong>Image</strong>, <strong>KG</strong>.</p>
+<ul><li>✅ Frameless <strong>guitar-pedal skin</strong>: custom title bar (drag / min / max / close), glowing</li></ul>
+<p>  green LED + monospace <code>AI STACK</code> wordmark, brushed-green faceplate gradient + accent   stripe, thin chassis border. Live service-status line in the faceplate.</p>
+<ul><li>✅ <strong>KG tab</strong>: native knowledge-graph subgraph snapshot via <code>/graph_image</code>, rendered</li></ul>
+<p>  inline, plus <strong>Open Gruff (window)</strong> — launches the embedded WebView2 Gruff companion.</p>
+<h2>Embedded Gruff — the <code>GruffView</code> companion (WebView2)</h2>
+<p>Gruff <em>is</em> embedded in a native window — just not in the Avalonia process. Embedding a WebView2 control directly in Avalonia (<code>WebView.Avalonia</code>) <strong>segfaults on instantiation</strong> (<code>0xC0000005</code>) on both Avalonia 11.2.1 and a version-matched 11.0.11, with the WebView2 runtime installed and <code>WebView2Loader.dll</code> deployed — i.e. the package's native interop is broken on .NET 9, not a runtime/version problem. So Gruff runs in <strong><code>GruffView/</code></strong>, a tiny <strong>WPF</strong> app using the <em>official, rock-solid</em> <code>Microsoft.Web.WebView2.Wpf</code> control. The Avalonia KG tab's <strong>Open Gruff (window)</strong> button launches <code>GruffView.exe</code> (passing the AG URL); it loads the live AllegroGraph WebView/Gruff embedded. This is the WPF-WebView2 strength we picked Avalonia <em>despite</em> — proof that the shim cleanly supports a second native shell where it's the better tool.</p>
+<pre><code>
+ai-stack-native/
+  AiStackNative.csproj   # Avalonia app (6 tabs, pedal skin)
+  GruffView/             # WPF companion: WebView2 → Gruff  (net9.0-windows)
+</code></pre>
+<p><code>GruffView</code> is excluded from the Avalonia project's globs (see the <code>&lt;Compile Remove&gt;</code> in <code>AiStackNative.csproj</code>); build it separately with <code>dotnet build GruffView</code>.</p>
+<h2>Next steps</h2>
+<ul><li>Polish the pedal skin (knob/footswitch motifs, textures) and a maximize-state layout fix</li></ul>
+<p>  for the <code>ExtendClientArea</code> faceplate.</p>
+<ul><li>Optionally fold the two projects into a single <code>.sln</code> and a sibling-folder layout.</li><li>Pass deep-link URLs to <code>GruffView</code> (e.g. open a specific graph/query) from the KG tab.</li></ul>
+</article>
+<hr><p>As I have been given, so I freely give:<br>The documentation on this site is licensed under <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative&nbsp;Commons Attribution&nbsp;4.0 International (CC&nbsp;BY&nbsp;4.0)</a>. Code and bundled components (AllegroGraph, Llama/Nemotron weights, &amp;c.) retain their own licenses.</p><h4>&copy; 2026 Don Lindsay</h4>
+</body>
+</html>

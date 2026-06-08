@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEVLOG — AI Stack (rolling, through 2026-06-08) — IRON &amp; FEATHERS</title>
+<meta name="description" content="Rolling devlog.">
+<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="site.css">
+<link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+<meta name="dcterms.license" content="https://creativecommons.org/licenses/by/4.0/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "DEVLOG \u2014 AI Stack (rolling, through 2026-06-08)",
+  "name": "DEVLOG \u2014 AI Stack (rolling, through 2026-06-08)",
+  "description": "Rolling devlog.",
+  "datePublished": "2026-06-08",
+  "dateModified": "2026-06-08",
+  "author": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "copyrightHolder": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "copyrightYear": 2026,
+  "articleSection": "Devlogs",
+  "keywords": [
+    "AI Stack",
+    "AllegroGraph",
+    "llama.cpp",
+    "RAG",
+    "Devlogs"
+  ],
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "IRON & FEATHERS",
+    "url": "https://donlindsay.github.io/"
+  },
+  "url": "https://donlindsay.github.io/DEVLOG.html",
+  "additionalType": "http://rdfs.org/sioc/ns#Post",
+  "about": {
+    "@type": "Thing",
+    "name": "Devlogs"
+  }
+}
+</script>
+</head>
+<body>
+<table class="hdr"><tr><td><h1><a href="index.html">IRON &amp; FEATHERS</a></h1></td></tr><tr><td align="right">AI&nbsp;Stack &mdash; local-first KG+LLM workbench<br><a href="https://github.com/donlindsay">github.com/donlindsay</a></td></tr></table>
+<p class="crumb"><a href="index.html">&larr; index</a> <span class="muted">/ Devlogs</span></p>
+<article>
+<h1>DEVLOG — AI Stack (rolling, through 2026-06-08)</h1>
+<h2>Session 2026-06-08 (cont.) — Slot-0 re-architecture: llama.cpp primary, vLLM shelved</h2>
+<p>Backend <code>a4e1b3f → 5b48a89</code>; app <code>bb4b359</code>. Full snapshot: <code>DEVLOG-2026-06-08-llamacpp.md</code> (ingested to <code>data.docs</code>).</p>
+<ul><li><strong>llama.cpp is the new PRIMARY engine</strong> — <code>llama-server</code> built from source for <strong>CUDA sm_120</strong> (Blackwell-FP4), OpenAI API on :8002, serving the <strong>exact Ollama GGUF blobs</strong> (parity). Default = <strong>llama.cpp × Nemotron</strong>, ~180 tok/s. GPU-managed model-swap via <code>.target-model</code> + the <code>ai-llamacpp</code> unit; <code>deploy/llamacpp/</code>.</li><li><strong>vLLM SHELVED</strong> (dormant like n8n/ComfyUI) — out of <code>localllm._ENGINES</code> + the default; <code>ai-vllm</code> stopped to free the GPU; code/<code>deploy/vllm</code>/parser-plugin preserved + swap-in-able via <code>set_engine("vllm")</code>.</li><li><strong>Reaper matrix → 2×2 {Ollama, llama.cpp} × {Nemotron, Twin-Llama}</strong> — backend <code>_MANAGED_ENGINES</code> generalizes the managed-server lifecycle (mutual GPU exclusion); <code>run_agent</code>/<code>api</code>/status-chip repointed; app pedal/grid/badge/Demo updated; builds clean.</li><li><strong>Preceded by:</strong> a tool-call/RAG <strong>diagnostic battery</strong> (<code>diag.py</code>) that caught vLLM×Nemotron tool-calling was broken (parser <code>__init__</code> vs vLLM 0.22.1), a re-battery (Phase C agent loop), and a shared thinking-off fix in <code>localllm.generate</code>/<code>bench</code>.</li><li><strong>Docs/audit:</strong> <code>AUDIT-2026-06-08.md</code> (hardware + software), <code>CODE-REVIEW-2026-06-08.md</code>; this rolling DEVLOG + <code>AUDIT.md</code> caught up to the new architecture.</li></ul>
+<h2>Session 2026-06-08 (cont.) — pedalboard UX, Reaper console overhaul, app identity</h2>
+<p>App <code>3be15db → d3205c7</code>; backend <code>cbf458f → 90681dd</code>. Full snapshot: <code>DEVLOG-2026-06-08-ux.md</code> (ingested to <code>data.docs</code>).</p>
+<ul><li><strong>Pedal MAIN/OPTS/SYSTEM redesign</strong> — declarative <code>ControlSpec</code> toolkit (<code>MainWindow.Controls.cs</code>); one spec per tab drives both the OPTS surface and the pedal headline; numeric→knobs, enums→selectors, booleans→toggle switches, actions→footswitches, free text framed.</li><li><strong>Tabby → code-assist skill</strong> (<code>sk_tabby</code>, slot 6) routing to the active engine×model; dropped from the engine axis; Qwen weights removed.</li><li><strong>Reaper console overhaul</strong> — removed legacy Load/Release buttons; cell label = what the button ENGAGES (<code>vllm:nemotron</code>, <code>ollama:twin-llama</code>); <strong>status relative to the engaged cell so exactly one LIVE</strong> (LIVE / READY / LOADABLE / FALLBACK); realtime 3 s poll; per-cell tok/s + TTFT line graphs.</li><li><strong>App identity</strong> — horse taskbar icon (from the tray image); taskbar Jump List (Web Console / Gruff / AllegroGraph / Terminal / Restart API); tray utility pruned (n8n + ComfyUI gone, Restart API added).</li><li><strong>Backend fixes</strong> — vLLM VRAM lifecycle (evict Ollama before load, SIGKILL on release); memory recall injects authoritative <code>data.facts</code> triples over fuzzy vector recall.</li><li><strong>Ops</strong> — <code>ai-api</code>/<code>ai-console</code> are transient <code>systemd-run</code> units; restart via <code>start-stack.sh</code>, never <code>systemctl restart</code>.</li></ul>
+<h2>Session 2026-06-08 — second local engine, 6-slot board, Reaper console</h2>
+<p>Backend <code>b0f541b → 2464fe5</code>; app <code>1a91fd5 → 074259d</code>. Full snapshot: <code>DEVLOG-2026-06-08.md</code> (ingested to <code>data.docs</code>).</p>
+<ul><li><strong>vLLM "Twin Llama" live on Blackwell sm_120</strong> — second serving engine beside Ollama. torch 2.11.0+cu130; flashinfer bypassed (<code>VLLM_USE_FLASHINFER_SAMPLER=0</code> → FLASH_ATTN); ungated <code>unsloth/Llama-3.2-3B-Instruct</code> as alias <code>twin-llama</code>; <code>ai-vllm</code> systemd unit, on-demand (started/stopped with the engine swap for single-resident VRAM).</li><li><strong>6-slot pedalboard</strong> — split Chat into <strong>0 Engine</strong> (Ollama/vLLM/Tabby) + <strong>1 Model</strong> (Nemotron/Twin Llama) as a free matrix; <strong>2 Knowledge</strong> synthesizes Ask/Search/Graph/KG; <strong>3 Media</strong>; <strong>4 Reaper</strong>; <strong>5 Audio</strong>. Pedal-slot decoupled from content-tab.</li><li><strong>Reaper VRAM/perf console</strong> — live GPU telemetry, 3×2 engine×model status matrix, on-demand Load/Release vLLM, per-cell benchmarks (nemotron ≈ 133 tok/s, TTFT 26 ms). Endpoints <code>/gpu</code>, <code>/local-matrix</code>, <code>/local-bench</code>.</li><li><strong>Housekeeping</strong> — GitHub n8n-credential PAT rotation <strong>closed</strong>; demo-capture choreography directive recorded (→ Demo.cs refresh task); DCAT registry rebuilt (6 datasets).</li></ul>
+<hr>
+<h2>(session ending 2026-06-07)</h2>
+<p>Backend commits <code>752f63f → b0f541b</code>; app commits <code>923a458 → 1a91fd5</code>. Highlights, in order.</p>
+<h2>1. Pedalboard: Stable Diffusion rebrand + swappable pedals</h2>
+<ul><li>Retired the ComfyUI image path in favor of the diffusers SD worker; rebranded the image pedal ComfyUI→<strong>Stable Diffusion</strong>, fixed the regressions (status key <code>ComfyUI</code>→<code>SD</code>, dead output folder).</li><li>Built a <strong>generic pedal-swap mechanism</strong>: <code>PedalVariants</code> (a list of interchangeable pedals per slot); double-click pops a "SWAP PEDAL" palette. First pair: <strong>SD ↔ ComfyUI</strong> (the legacy skin's LED honestly reads offline). <em>(app 923a458)</em></li></ul>
+<h2>2. gowf — wildland-fire knowledge graph pulled in</h2>
+<ul><li>Installed <code>gh</code> in WSL, authenticated; cloned <strong>gowf</strong> (NWCG/ICS wildland-fire ontology, built in AllegroGraph+Gruff).</li><li>Loaded 12 Turtle files into a new <strong><code>data.fire</code></strong> repo (per-file named graphs), federated under <code>fed.kb</code>. <em>(backend a813481)</em></li></ul>
+<h2>3. KnowWhereGraph — ontology import + live federation</h2>
+<ul><li>A full import is impossible (~29B triples vs the 5M license), so: imported the <strong>modular KWG ontology</strong> into <strong><code>schema.kwg</code></strong> (572 classes), authored a gowf↔KWG alignment, and wired <code>federation.service()</code> for live SPARQL <code>SERVICE</code> to KWG's endpoint.</li><li>KWG's hosted GraphDB endpoint is <strong>down upstream</strong> (license expired 2026-02-04); our SERVICE plumbing is verified against DBpedia. <em>(backend a813481)</em></li></ul>
+<h2>4. Remediation R1–R7 — gowf subordinated to canonical KWG</h2>
+<ul><li>Standing governance: <strong>KWG canonical, gowf sandbox.</strong> Reversed the alignment to the canonical direction (gowf ⊑ KWG, exact duplicates deprecated), confirmed <code>incidentPosition</code> is sandbox-unique, adopted <strong>KWG-SHACL</strong> as the conformance gate — which measured the sandbox as structurally disjoint (observation-centric KWG vs feed-centric gowf). <em>(backend 7facd1f)</em></li></ul>
+<h2>5. Cloud web-tier council — 5 → 8 peers</h2>
+<p>A real parallel council synthesized locally by nemotron (only the query leaves the box):</p>
+<ul><li>61cec34: <strong>5 peers</strong> — serpapi, ddgs, perplexity, claude, openai.</li><li>d23dbf8: <strong>+OpenRouter</strong> (gemini-2.5-flash; gemini-2.5-pro returns null content as a thinking model).</li><li>9030ded: <strong>+Hugging Face</strong> (llama-3.3-70b, open-weights, via the HF router).</li><li>e5fb5b0: <strong>+Ollama Cloud</strong> (gpt-oss:120b, via this box's linked ollama.com account).</li></ul>
+<h2>6. Key provisioning + the secret store</h2>
+<ul><li>Provisioned SerpAPI, OpenRouter, Hugging Face, and Ollama Cloud keys (regex-extracted from <code>gitinfo.txt</code>, never printed); linked the box to ollama.com via its device pubkey.</li><li>Closed the <strong>Perplexity rotation</strong> end-to-end (provider revoke + n8n credential rotated, then evicted).</li><li><code>gitinfo.txt</code> deprecated and scrubbed.</li></ul>
+<h2>7. Credential dependency inventory</h2>
+<ul><li>Materialized the full <strong>vendor → access → service → model</strong> dependency graph into <code>registry</code> (<code>&lt;http://kg.local/inv/graph&gt;</code>) with custody events — anchored to the key store. Surfaced 4 redundant filesystem↔n8n credential pairs. <em>(backend e1bf356)</em></li></ul>
+<h2>8. n8n eviction</h2>
+<ul><li>Replaced the 3 n8n-routed paths (Claude, Perplexity, web search) with <strong>direct vendor calls</strong> from the filesystem keys; removed <code>post()</code>; dropped n8n+runner from <code>service_status</code>; stopped the services; cleaned <code>start-stack.sh</code> (and stripped its hardcoded encryption key). <em>(backend 5a5bb09, app 72e59d7)</em></li><li>Then <strong>folded n8n into a library</strong> (<code>aistack/n8n.py</code>) and made the <strong>Search pedal swappable SerpAPI ↔ n8n</strong> — n8n is now a one-click opt-in, not a dependency. <em>(backend b0f541b, app 1a91fd5)</em></li></ul>
+<h2>Net result</h2>
+<p>The stack runs on <strong>two pillars</strong> — AllegroGraph (symbolic) + Ollama (neural) — with a diffusers SD worker and a local FastAPI/Gradio frontend. The web tier is an 8-peer cloud council synthesized locally. n8n, ComfyUI, and Docker are all gone from the hot path (n8n and ComfyUI survive only as one-click swap-in pedals). Everything is graph-native: data, memory, provenance, custody, the DCAT registry, and now the credential inventory all live in AllegroGraph.</p>
+<h2>Cleanup (post-session)</h2>
+<ul><li><strong>Purged n8n entirely:</strong> deleted <code>n8n-data</code> (62 M), the Python runner (514 M), and the nvm Node 22 (2.6 G) — ~3.2 GB freed, encrypted credential store destroyed. The n8n swap-in pedal remains as a dead/legacy skin. System <code>node</code> v18 kept (pandoc dependency).</li><li>Dropped the speculative KWG-live-endpoint item from the queue.</li></ul>
+</article>
+<hr><p>As I have been given, so I freely give:<br>The documentation on this site is licensed under <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative&nbsp;Commons Attribution&nbsp;4.0 International (CC&nbsp;BY&nbsp;4.0)</a>. Code and bundled components (AllegroGraph, Llama/Nemotron weights, &amp;c.) retain their own licenses.</p><h4>&copy; 2026 Don Lindsay</h4>
+</body>
+</html>

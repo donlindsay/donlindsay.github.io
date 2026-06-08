@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shakedown Cruise — Results (2026-06-08) — IRON &amp; FEATHERS</title>
+<meta name="description" content="Stack shakedown.">
+<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="site.css">
+<link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+<meta name="dcterms.license" content="https://creativecommons.org/licenses/by/4.0/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Shakedown Cruise \u2014 Results (2026-06-08)",
+  "name": "Shakedown Cruise \u2014 Results (2026-06-08)",
+  "description": "Stack shakedown.",
+  "datePublished": "2026-06-08",
+  "dateModified": "2026-06-08",
+  "author": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "copyrightHolder": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "copyrightYear": 2026,
+  "articleSection": "Telemetry & Reports",
+  "keywords": [
+    "AI Stack",
+    "AllegroGraph",
+    "llama.cpp",
+    "RAG",
+    "Telemetry & Reports"
+  ],
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "IRON & FEATHERS",
+    "url": "https://donlindsay.github.io/"
+  },
+  "url": "https://donlindsay.github.io/shakedown-results.html",
+  "additionalType": "http://rdfs.org/sioc/ns#Post",
+  "about": {
+    "@type": "Thing",
+    "name": "Telemetry & Reports"
+  }
+}
+</script>
+</head>
+<body>
+<table class="hdr"><tr><td><h1><a href="index.html">IRON &amp; FEATHERS</a></h1></td></tr><tr><td align="right">AI&nbsp;Stack &mdash; local-first KG+LLM workbench<br><a href="https://github.com/donlindsay">github.com/donlindsay</a></td></tr></table>
+<p class="crumb"><a href="index.html">&larr; index</a> <span class="muted">/ Telemetry &amp; Reports</span></p>
+<article>
+<h1>Shakedown Cruise — Results (2026-06-08)</h1>
+<p>Hybrid (UI drive + backend verify), telemetry-graded. Local-only scope. Legend: ✅ PASS · ❌ FAIL · ⚠ caveat.</p>
+<table class="md"><thead><tr><th>Scenario</th><th>P1</th><th>P2</th><th>P3</th><th>P4</th><th>P5</th><th>tel:Run</th><th>Notes</th></tr></thead><tbody><tr><td>S01 Boot &amp; health</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>⚠</td><td>recorded</td><td>P5: WEB-knob Cancel doesn't revert (stays LOCAL)</td></tr><tr><td>S02 Chat + memory</td><td>✅</td><td>⚠</td><td>✅</td><td>⚠</td><td>✅</td><td>recorded</td><td>P2 trace-UI present, live render not captured; P4 recall value wrong (data.feed≠data.fire); disk-skew cold-load caught</td></tr><tr><td>S03 Free-matrix swap</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>recorded</td><td>UI carousels (Model 2-var, Engine 3-var) + fallbacks all good; UI pedals need re-sync after backend reset</td></tr><tr><td>S04 Ask / RAG</td><td>✅</td><td>⚠</td><td>⚠</td><td>✅</td><td>✅</td><td>recorded</td><td>RAG+citations work; corpus is summary-only (sk_ingest_text) → shallow; data.fire has no -vec (routing proven)</td></tr><tr><td>S05 Search</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>recorded</td><td>P2 watermark says "Perplexity" but provider=SerpAPI (cosmetic); n honored</td></tr><tr><td>S06 Graph NL→SPARQL</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>recorded</td><td>NL→SPARQL→Run = count 2; <strong>RDFS++ proven 0→74 entailed</strong>; materialize ok</td></tr><tr><td>S07 KG / Gruff</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>recorded</td><td>snapshot 29 nodes/30 edges; opts honored; Gruff style saved + up (303)</td></tr><tr><td>S08 Media image</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>recorded</td><td>SD cold-boot generated on-prompt image; warm gen fast; ComfyUI skin LED dark (honest); disk-skew caught</td></tr><tr><td>S09 Reaper matrix</td><td>✅</td><td>✅</td><td>⚠</td><td>✅</td><td>✅</td><td>recorded</td><td><strong>P3 DEFECT: clicking a matrix cell navigates away from Reaper to Chat</strong>; Bench all skips LOADABLE/PLACEHOLDER (no vLLM load) ~130 tok/s</td></tr><tr><td>S10 Telemetry</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>recorded</td><td>soak ~60req/30s; assess 42 met / 4 missed (all cold-load disk skews); prune bounded (ag 1997, 11 runs)</td></tr></tbody></table>
+<h2>Result: 44/50 PASS · 6 ⚠ · 0 FAIL.  Telemetry: 42 met / 4 missed (skews benign).</h2>
+<h2>Defect / observation log</h2>
+<ol><li><strong>S09 P3 (UX):</strong> clicking a Reaper matrix cell engages the Engine/Model pedals (correct) but <code>OnFoot</code> switches the view to the engaged pedal's content tab (Model→Chat) — so you get bounced OFF the Reaper page you're working in. Fix: matrix-cell click should keep the Reaper tab active (set engine/model without navigating).</li><li><strong>S02 P4 (functional):</strong> memory recall (ON) returned a wrong value — stored "data.fire", recalled "data.feed". Recall engaged correctly (P5 OFF→no recall confirms the toggle), but the value is garbled — likely nemotron misreading or vector cross-contamination with <code>data.fire</code>'s <code>DataFeedItem</code> entities.</li><li><strong>S01 P5 (UX):</strong> the WEB ACCESS knob's permission-modal <strong>Cancel does not revert</strong> the knob (stays LOCAL).</li><li><strong>S04 (corpus):</strong> <code>data.docs</code> holds only LLM-extracted summaries (<code>sk_ingest_text</code>), so deep doc questions get shallow grounded answers. RAG mechanism is sound; argues for the planned full-text/file-interpreter ingester. (<code>data.fire</code> has no <code>-vec</code> store — RAG routing proven via empty result.)</li><li><strong>S05 P2 (cosmetic):</strong> Search box watermark says "(Perplexity)" but the provider is SerpAPI.</li><li><strong>Cross-cutting (cosmetic):</strong> UI Engine/Model pedals don't re-sync after a backend <code>/local-engine</code> reset (e.g. matrix-cell engage / API reset) — pedal skin can lag the active backend. Registry triple counts are stale until <code>registry.rebuild()</code>.</li></ol>
+<h2>Deep cruise (deferred follow-up)</h2>
+<h3>S11 — vLLM Twin-Llama on-demand (live)  — surfaced 2 real lifecycle defects</h3>
+<table class="md"><thead><tr><th>#</th><th>Action</th><th>Result</th></tr></thead><tbody><tr><td>1</td><td><code>set_engine(vllm)</code> while Ollama nemotron resident</td><td>❌→ <strong>LOAD FAILS</strong>: <code>ValueError: No available memory for the cache blocks</code> — on-demand start does NOT evict Ollama first; vLLM (gpu-util 0.70 ≈ 8.5GB) can't fit beside resident nemotron (~3.5GB).</td></tr><tr><td>2</td><td>Evict nemotron (keep_alive 0) → start vLLM</td><td>✅ LIVE in 30s; <code>/status</code> vLLM:true; matrix <code>vllm:twin-llama [live]</code></td></tr><tr><td>3</td><td>Bench vLLM Twin-Llama</td><td>⚠ <strong>cold first call ~1.1 tok/s</strong> (warmup), warms to <strong>~73 tok/s</strong>; Ollama nemotron ~144 tok/s (llama.cpp wins single-stream; vLLM's edge is batching)</td></tr><tr><td>4</td><td>GPU while resident</td><td>⚠ <strong>11.7GB used / ~220 free</strong> — vLLM over-fills its 0.70 budget; telemetry <code>vramUsed 11721 &gt; 11000</code> MISSED + <code>tokPerSec 68 &lt; 120</code> MISSED</td></tr><tr><td>5</td><td>Release (engine→ollama) / <code>systemctl stop ai-vllm</code></td><td>❌ <strong>RELEASE FAILS</strong>: stop leaves the unit <code>active</code>, VRAM pinned at 11.7GB — "Release vLLM (free VRAM)" is broken; required <code>SIGKILL</code>/<code>pkill -9</code> to reclaim.</td></tr></tbody></table>
+<p><strong>S11 verdict: vLLM serves correctly in isolation but the on-demand LIFECYCLE has two blocking bugs</strong> (load doesn't evict Ollama; release doesn't stop the service). → task spawned.</p>
+<h3>S13 — Voice / VXA  ✅</h3>
+<p>TTS (text→90KB RIFF WAV) → STT round-trip transcribed "The shake-down crew is complete" (orig "...cruise is complete" — minor STT mishear cruise→crew); rate honored (250wpm→smaller WAV). ⚠ telemetry caught a <strong>46 MiB/s network skew</strong> — the voice path did unexpected network I/O on first use (likely an STT/TTS model fetch), auto-flagged as <code>tel:SkewFactor(network)</code>.</p>
+<h3>S12 — 8-peer cloud council  — SKIPPED by user (off-box; cloud stays off by default). Council remains covered only by its build-time verification.</h3>
+<p><strong>Deep cruise total: 13 tel:Runs. S11 found 2 blocking vLLM-lifecycle bugs (→ task_41873a85); S13 voice works (minor net-skew). S12 declined (off-box).</strong></p>
+<h2>CRUISE CONCLUDED</h2>
+<ul><li>Core (S01–S10): 44/50 PASS · 6 ⚠ · 0 FAIL.</li><li>Deep (S11/S13): vLLM lifecycle = 2 blocking bugs; voice = works. S12 skipped.</li><li>Defects → tasks: Reaper cell-nav (task_f833b24d), memory recall garble (task_d77b1d0b), vLLM lifecycle (task_41873a85). Plus minor/cosmetic (WEB-knob cancel, summary-only RAG corpus, search watermark, pedal re-sync).</li><li>Telemetry: 13 tel:Runs in data.telemetry; all misses were cold-load disk/net skews (auto-flagged) + vLLM's VRAM/throughput target misses. Disk-lean held.</li><li>Final state: clean idle — /status {AG,Ollama,SD up; vLLM:false}, GPU ~0.9GB, one app instance.</li></ul>
+<h2>Telemetry-grade (data.telemetry)</h2>
+<p>Every scenario produced a <code>tel:Run</code>; cruise-wide <code>/telemetry/assess</code> = <strong>42 met / 4 missed</strong>. The 4 misses are all <code>diskRead</code> (cold model/diffusers loads on first use of nemotron/SD), each correctly explained by an auto-detected <code>tel:SkewFactor (disk)</code>. Thermals (≤49°C), VRAM (≤7.7GB), and network all met throughout. Disk-lean held: ~180 triples/run, <code>prune(keep=20)</code> bounds the store.</p>
+</article>
+<hr><p>As I have been given, so I freely give:<br>The documentation on this site is licensed under <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative&nbsp;Commons Attribution&nbsp;4.0 International (CC&nbsp;BY&nbsp;4.0)</a>. Code and bundled components (AllegroGraph, Llama/Nemotron weights, &amp;c.) retain their own licenses.</p><h4>&copy; 2026 Don Lindsay</h4>
+</body>
+</html>

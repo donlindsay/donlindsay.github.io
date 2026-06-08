@@ -1,0 +1,47 @@
+{
+  "@context": {
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "dct": "http://purl.org/dc/terms/"
+  },
+  "@id": "https://donlindsay.github.io/taxonomy.jsonld",
+  "@type": "skos:ConceptScheme",
+  "dct:title": "AI Stack Documentation Taxonomy",
+  "skos:hasTopConcept": [
+    {
+      "@id": "#overview",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Overview & Guides",
+      "skos:scopeNote": "What the stack is and how to run it."
+    },
+    {
+      "@id": "#architecture",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Architecture",
+      "skos:scopeNote": "The current engine / serving architecture."
+    },
+    {
+      "@id": "#audit",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Audit & Review",
+      "skos:scopeNote": "Hardware/software audits and code review."
+    },
+    {
+      "@id": "#devlog",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Devlogs",
+      "skos:scopeNote": "Dated development logs \u2014 the current-work weblog."
+    },
+    {
+      "@id": "#deploy",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Deploy / Serving",
+      "skos:scopeNote": "Serving engines and ops."
+    },
+    {
+      "@id": "#telemetry",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Telemetry & Reports",
+      "skos:scopeNote": "Benchmarks, diagnostics, stress reports."
+    }
+  ]
+}

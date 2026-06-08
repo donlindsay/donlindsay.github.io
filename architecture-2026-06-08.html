@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Stack — current architecture (2026-06-08) — IRON &amp; FEATHERS</title>
+<meta name="description" content="Concise current-architecture snapshot.">
+<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="site.css">
+<link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+<meta name="dcterms.license" content="https://creativecommons.org/licenses/by/4.0/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "AI Stack \u2014 current architecture (2026-06-08)",
+  "name": "AI Stack \u2014 current architecture (2026-06-08)",
+  "description": "Concise current-architecture snapshot.",
+  "datePublished": "2026-06-08",
+  "dateModified": "2026-06-08",
+  "author": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "copyrightHolder": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "copyrightYear": 2026,
+  "articleSection": "Architecture",
+  "keywords": [
+    "AI Stack",
+    "AllegroGraph",
+    "llama.cpp",
+    "RAG",
+    "Architecture"
+  ],
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "IRON & FEATHERS",
+    "url": "https://donlindsay.github.io/"
+  },
+  "url": "https://donlindsay.github.io/architecture-2026-06-08.html",
+  "additionalType": "http://rdfs.org/sioc/ns#Post",
+  "about": {
+    "@type": "Thing",
+    "name": "Architecture"
+  }
+}
+</script>
+</head>
+<body>
+<table class="hdr"><tr><td><h1><a href="index.html">IRON &amp; FEATHERS</a></h1></td></tr><tr><td align="right">AI&nbsp;Stack &mdash; local-first KG+LLM workbench<br><a href="https://github.com/donlindsay">github.com/donlindsay</a></td></tr></table>
+<p class="crumb"><a href="index.html">&larr; index</a> <span class="muted">/ Architecture</span></p>
+<article>
+<h1>AI Stack — current architecture (2026-06-08)</h1>
+<blockquote>id: <code>urn:kg:doc:architecture-2026-06-08</code> · source: audit · date: 2026-06-08</blockquote>
+<p>AI Stack current architecture (2026-06-08). The local LLM runs on a free engine x model matrix called Reaper. Engines: Ollama and llama.cpp. Models: Nemotron and Twin-Llama. The PRIMARY engine is llama.cpp (llama-server, OpenAI-compatible API on port 8002, built for CUDA sm_120 / Blackwell), and the default engaged quadrant is llama.cpp x Nemotron (nemotron-3-nano:4b). vLLM was the prior GPU serving engine and is now SHELVED (dormant): out of the active matrix, ai-vllm stopped, but still swap-in-able via set_engine('vllm'). AllegroGraph 9.0.1 is the knowledge graph + RAG store; Ollama also serves embeddings (nomic-embed-text). The 12 GB GPU (RTX 5070) is single-resident: engaging one GPU engine evicts the others. Stable Diffusion runs as a socket-activated diffusers worker.</p>
+</article>
+<hr><p>As I have been given, so I freely give:<br>The documentation on this site is licensed under <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative&nbsp;Commons Attribution&nbsp;4.0 International (CC&nbsp;BY&nbsp;4.0)</a>. Code and bundled components (AllegroGraph, Llama/Nemotron weights, &amp;c.) retain their own licenses.</p><h4>&copy; 2026 Don Lindsay</h4>
+</body>
+</html>
