@@ -32,15 +32,7 @@
       "@id": "#devlog",
       "@type": "skos:Concept",
       "skos:prefLabel": "Devlog",
-      "skos:scopeNote": "Dated development logs \u2014 newest first.",
-      "skos:narrower": [
-        {
-          "@id": "#reference",
-          "@type": "skos:Concept",
-          "skos:prefLabel": "Reference",
-          "skos:scopeNote": "Supporting material \u2014 audits, serving, and test reports."
-        }
-      ]
+      "skos:scopeNote": "Dated development logs \u2014 newest first."
     }
   ]
 }
