@@ -6,42 +6,59 @@
   "@id": "https://donlindsay.github.io/taxonomy.jsonld",
   "@type": "skos:ConceptScheme",
   "dct:title": "AI Stack Documentation Taxonomy",
+  "dct:source": "AllegroGraph repo site.kg",
   "skos:hasTopConcept": [
     {
-      "@id": "#overview",
+      "@id": "#start",
       "@type": "skos:Concept",
-      "skos:prefLabel": "Overview & Guides",
-      "skos:scopeNote": "What the stack is and how to run it."
-    },
-    {
-      "@id": "#architecture",
-      "@type": "skos:Concept",
-      "skos:prefLabel": "Architecture",
-      "skos:scopeNote": "The current engine / serving architecture."
-    },
-    {
-      "@id": "#audit",
-      "@type": "skos:Concept",
-      "skos:prefLabel": "Audit & Review",
-      "skos:scopeNote": "Hardware/software audits and code review."
+      "skos:prefLabel": "Start here",
+      "skos:scopeNote": "What the stack is, and how to run it.",
+      "skos:narrower": [
+        {
+          "@id": "#overview",
+          "@type": "skos:Concept",
+          "skos:prefLabel": "Overview & Guides",
+          "skos:scopeNote": "Top-level orientation and usage."
+        },
+        {
+          "@id": "#architecture",
+          "@type": "skos:Concept",
+          "skos:prefLabel": "Architecture",
+          "skos:scopeNote": "The current engine / serving design."
+        }
+      ]
     },
     {
       "@id": "#devlog",
       "@type": "skos:Concept",
-      "skos:prefLabel": "Devlogs",
-      "skos:scopeNote": "Dated development logs \u2014 the current-work weblog."
+      "skos:prefLabel": "Devlog",
+      "skos:scopeNote": "Dated development logs \u2014 newest first."
     },
     {
-      "@id": "#deploy",
+      "@id": "#reference",
       "@type": "skos:Concept",
-      "skos:prefLabel": "Deploy / Serving",
-      "skos:scopeNote": "Serving engines and ops."
-    },
-    {
-      "@id": "#telemetry",
-      "@type": "skos:Concept",
-      "skos:prefLabel": "Telemetry & Reports",
-      "skos:scopeNote": "Benchmarks, diagnostics, stress reports."
+      "skos:prefLabel": "Reference",
+      "skos:scopeNote": "Audits, serving, and test reports.",
+      "skos:narrower": [
+        {
+          "@id": "#audit",
+          "@type": "skos:Concept",
+          "skos:prefLabel": "Audit & Review",
+          "skos:scopeNote": "Hardware/software audits and code review."
+        },
+        {
+          "@id": "#deploy",
+          "@type": "skos:Concept",
+          "skos:prefLabel": "Deploy & Serving",
+          "skos:scopeNote": "Serving engines and ops."
+        },
+        {
+          "@id": "#telemetry",
+          "@type": "skos:Concept",
+          "skos:prefLabel": "Telemetry & Reports",
+          "skos:scopeNote": "Benchmarks, diagnostics, stress reports."
+        }
+      ]
     }
   ]
 }

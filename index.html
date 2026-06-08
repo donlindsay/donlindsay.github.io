@@ -44,59 +44,47 @@
 <body>
 <table class="hdr"><tr><td><h1><a href="index.html">IRON &amp; FEATHERS</a></h1></td></tr><tr><td align="right">AI&nbsp;Stack &mdash; local-first KG+LLM workbench<br><a href="https://github.com/donlindsay">github.com/donlindsay</a></td></tr></table>
 <p class="lede">A private, offline-first AI workbench running natively in WSL2: AllegroGraph (RDF + SPARQL + RDFS++ reasoning) as the symbolic brain, and a free <strong>engine&times;model matrix</strong> — Ollama and llama.cpp serving Nemotron &amp; Twin-Llama on a 12&nbsp;GB Blackwell GPU — as the neural shell, behind a FastAPI shim and a native Windows Avalonia app skinned as a guitar pedalboard. Default: <strong>llama.cpp&nbsp;&times;&nbsp;Nemotron</strong> (~180 tok/s, CUDA sm_120). vLLM is shelved (dormant, swap-in-able).</p>
-<img src="assets/hero.png" alt="The AI Stack pedalboard (EASY skin): the Llama.cpp x Nemotron engine chain, with the agent answering a question"><p class="cap muted">The AI Stack pedalboard (EASY skin) &mdash; the Llama.cpp&times;Nemotron engine chain (Ollama / AllegroGraph below), and the agent confirming the live engine.</p>
-<h2>Gallery</h2>
-<div class="gallery">
-<figure><img src="assets/reaper.png" alt="The Reaper console — the 2×2 engine×model matrix (Ollama / Llama.cpp × Nemotron / Twin-Llama) with live GPU telemetry. Llama.cpp×Nemotron is LIVE; click any cell to engage + bench."><figcaption class="cap muted">The Reaper console &mdash; the 2&times;2 engine&times;model matrix (Ollama / Llama.cpp &times; Nemotron / Twin-Llama) with live GPU telemetry. Llama.cpp&times;Nemotron is LIVE; click any cell to engage + bench.</figcaption></figure>
-<figure><img src="assets/graph.png" alt="The AllegroGraph pedal — a RAG query over data.docs (native vector engine) answering with inline citations and its source set."><figcaption class="cap muted">The AllegroGraph pedal &mdash; a RAG query over <code>data.docs</code> (native vector engine) answering with inline citations and its source set.</figcaption></figure>
-</div>
-<h2>Current work</h2>
-<div class="docrow">&mdash; <span class="muted">2026-06-08</span> <a href="DEVLOG-2026-06-08-llamacpp.html">Devlog — 2026-06-08 — Slot 0 re-architecture: llama.cpp primary, vLLM shelved</a></div>
-<div class="docrow">&mdash; <span class="muted">2026-06-08</span> <a href="DEVLOG-2026-06-08-ux.html">DEVLOG — AI Stack — Pedalboard UX + Reaper console overhaul (2026-06-08, session 2)</a></div>
-<div class="docrow">&mdash; <span class="muted">2026-06-08</span> <a href="DEVLOG-2026-06-08.html">DEVLOG SNAPSHOT — AI Stack — 2026-06-08</a></div>
-<div class="docrow">&mdash; <span class="muted">2026-06-08</span> <a href="DEVLOG.html">DEVLOG — AI Stack (rolling, through 2026-06-08)</a></div>
-
-<h2>Overview &amp; Guides</h2>
-<p class="catnote muted">What the stack is and how to run it.</p>
-<div class="docrow">&mdash; <a href="backend-README.html">AI Stack Console (`main`)</a> <span class="muted">&middot; The aistack backend — agent, skills, engine matrix.</span></div>
-<div class="docrow">&mdash; <a href="app-README.html">AI Stack — native front end (Avalonia starter)</a> <span class="muted">&middot; The Avalonia desktop pedalboard app.</span></div>
-<div class="docrow">&mdash; <a href="stack-ROADMAP.html">AI Stack — Roadmap</a> <span class="muted">&middot; Roadmap.</span></div>
+<img src="assets/hero.png" alt="The AI Stack pedalboard (EASY skin): the Llama.cpp x Nemotron engine chain, with the agent answering a question"><p class="cap muted">The AI Stack pedalboard (EASY skin) &mdash; the Llama.cpp&times;Nemotron engine chain, and the agent confirming the live engine.</p>
+<div class="gallery"><figure><img src="assets/reaper.png" alt="Reaper console — the 2×2 engine×model matrix with live GPU telemetry."><figcaption class="cap muted">Reaper console &mdash; the 2&times;2 engine&times;model matrix with live GPU telemetry.</figcaption></figure><figure><img src="assets/graph.png" alt="AllegroGraph pedal — a RAG query over data.docs answering with citations."><figcaption class="cap muted">AllegroGraph pedal &mdash; a RAG query over <code>data.docs</code> answering with citations.</figcaption></figure></div>
+<h2>Start here</h2>
+<p class="catnote muted">What the stack is, and how to run it.</p>
+<div class="sub"><h3>Overview &amp; Guides</h3>
+<p class="catnote muted">Top-level orientation and usage.</p>
 <div class="docrow">&mdash; <a href="stack-README.html">Local AI Stack — native (WSL2 Ubuntu, no Docker)</a> <span class="muted">&middot; Top-level stack overview.</span></div>
 <div class="docrow">&mdash; <a href="stack-GUIDE.html">The Local AI Stack — Guide</a> <span class="muted">&middot; Usage guide.</span></div>
-
-<h2>Architecture</h2>
-<p class="catnote muted">The current engine / serving architecture.</p>
-<div class="docrow">&mdash; <a href="architecture-2026-06-08.html">AI Stack — current architecture (2026-06-08)</a> <span class="muted">&middot; Concise current-architecture snapshot.</span></div>
-
-<h2>Audit &amp; Review</h2>
+<div class="docrow">&mdash; <a href="stack-ROADMAP.html">AI Stack — Roadmap</a> <span class="muted">&middot; Roadmap.</span></div>
+<div class="docrow">&mdash; <a href="backend-README.html">AI Stack Console (`main`)</a> <span class="muted">&middot; The aistack backend — agent, skills, engine matrix.</span></div>
+<div class="docrow">&mdash; <a href="app-README.html">AI Stack — native front end (Avalonia starter)</a> <span class="muted">&middot; The Avalonia desktop pedalboard app.</span></div></div>
+<div class="sub"><h3>Architecture</h3>
+<p class="catnote muted">The current engine / serving design.</p>
+<div class="docrow">&mdash; <a href="architecture-2026-06-08.html">AI Stack — current architecture (2026-06-08)</a> <span class="muted">&middot; Concise current-architecture snapshot.</span></div></div>
+<h2>Devlog</h2>
+<p class="catnote muted">Dated development logs — newest first.</p>
+<div class="docrow">&mdash; <a href="DEVLOG-2026-06-08-llamacpp.html">Devlog — 2026-06-08 — Slot 0 re-architecture: llama.cpp primary, vLLM shelved</a> <span class="muted">&middot; Slot-0 re-architecture: llama.cpp primary, vLLM shelved.</span></div>
+<div class="docrow">&mdash; <a href="DEVLOG-2026-06-08-ux.html">DEVLOG — AI Stack — Pedalboard UX + Reaper console overhaul (2026-06-08, session 2)</a> <span class="muted">&middot; Pedalboard UX, Reaper console overhaul.</span></div>
+<div class="docrow">&mdash; <a href="DEVLOG.html">DEVLOG — AI Stack (rolling, through 2026-06-08)</a> <span class="muted">&middot; Rolling devlog.</span></div>
+<div class="docrow">&mdash; <a href="DEVLOG-2026-06-08.html">DEVLOG SNAPSHOT — AI Stack — 2026-06-08</a> <span class="muted">&middot; Second engine, 6-slot board, Reaper console.</span></div>
+<div class="docrow">&mdash; <a href="DEVLOG-2026-06-07.html">DEVLOG SNAPSHOT — AI Stack — 2026-06-07</a> <span class="muted">&middot; Pedal control-surface redesign.</span></div>
+<h2>Reference</h2>
+<p class="catnote muted">Audits, serving, and test reports.</p>
+<div class="sub"><h3>Audit &amp; Review</h3>
 <p class="catnote muted">Hardware/software audits and code review.</p>
 <div class="docrow">&mdash; <a href="AUDIT.html">AI Stack — Complete Audit (2026-06-08)</a> <span class="muted">&middot; Rolling Complete Audit.</span></div>
 <div class="docrow">&mdash; <a href="AUDIT-2026-06-08.html">AI-Stack Audit — 2026-06-08</a> <span class="muted">&middot; Hardware + software snapshot.</span></div>
-<div class="docrow">&mdash; <a href="CODE-REVIEW-2026-06-08.html">Code-review package — 2026-06-08 — Reaper engine evolution + llama.cpp</a> <span class="muted">&middot; Code-review package (range, focus, risks).</span></div>
-
-<h2>Devlogs</h2>
-<p class="catnote muted">Dated development logs — the current-work weblog.</p>
-<div class="docrow">&mdash; <a href="DEVLOG-2026-06-08-llamacpp.html">Devlog — 2026-06-08 — Slot 0 re-architecture: llama.cpp primary, vLLM shelved</a> <span class="muted">&middot; Slot-0 re-architecture: llama.cpp primary, vLLM shelved.</span></div>
-<div class="docrow">&mdash; <a href="DEVLOG-2026-06-08-ux.html">DEVLOG — AI Stack — Pedalboard UX + Reaper console overhaul (2026-06-08, session 2)</a> <span class="muted">&middot; Pedalboard UX, Reaper console overhaul.</span></div>
-<div class="docrow">&mdash; <a href="DEVLOG-2026-06-08.html">DEVLOG SNAPSHOT — AI Stack — 2026-06-08</a> <span class="muted">&middot; Second engine, 6-slot board, Reaper console.</span></div>
-<div class="docrow">&mdash; <a href="DEVLOG.html">DEVLOG — AI Stack (rolling, through 2026-06-08)</a> <span class="muted">&middot; Rolling devlog.</span></div>
-<div class="docrow">&mdash; <a href="DEVLOG-2026-06-07.html">DEVLOG SNAPSHOT — AI Stack — 2026-06-07</a> <span class="muted">&middot; Pedal control-surface redesign.</span></div>
-
-<h2>Deploy / Serving</h2>
+<div class="docrow">&mdash; <a href="CODE-REVIEW-2026-06-08.html">Code-review package — 2026-06-08 — Reaper engine evolution + llama.cpp</a> <span class="muted">&middot; Code-review package (range, focus, risks).</span></div></div>
+<div class="sub"><h3>Deploy &amp; Serving</h3>
 <p class="catnote muted">Serving engines and ops.</p>
 <div class="docrow">&mdash; <a href="deploy-llamacpp-README.html">llama.cpp serving — PRIMARY Slot-0 engine</a> <span class="muted">&middot; llama.cpp engine (PRIMARY).</span></div>
-<div class="docrow">&mdash; <a href="deploy-telemetry-README.html">Stress + telemetry kit</a> <span class="muted">&middot; Stress + telemetry kit.</span></div>
 <div class="docrow">&mdash; <a href="deploy-vllm-README.html">vLLM serving — ⚠️ SHELVED (dormant, 2026-06-08)</a> <span class="muted">&middot; vLLM engine (SHELVED).</span></div>
-
-<h2>Telemetry &amp; Reports</h2>
+<div class="docrow">&mdash; <a href="deploy-telemetry-README.html">Stress + telemetry kit</a> <span class="muted">&middot; Stress + telemetry kit.</span></div></div>
+<div class="sub"><h3>Telemetry &amp; Reports</h3>
 <p class="catnote muted">Benchmarks, diagnostics, stress reports.</p>
-<div class="docrow">&mdash; <a href="devlog-2026-06-08-diag.html">Devlog — 2026-06-08 — Re-battery, tool-call/RAG diagnostic, Nemotron parser fix</a> <span class="muted">&middot; Re-battery / diagnostic session.</span></div>
-<div class="docrow">&mdash; <a href="battery-results.html">Reaper Quadrant Test Battery — 4-way competition</a> <span class="muted">&middot; 4-way quadrant test battery.</span></div>
-<div class="docrow">&mdash; <a href="shakedown-results.html">Shakedown Cruise — Results (2026-06-08)</a> <span class="muted">&middot; Stack shakedown.</span></div>
 <div class="docrow">&mdash; <a href="telemetry-README.html">Stress + telemetry kit</a> <span class="muted">&middot; Telemetry kit readme.</span></div>
+<div class="docrow">&mdash; <a href="battery-results.html">Reaper Quadrant Test Battery — 4-way competition</a> <span class="muted">&middot; 4-way quadrant test battery.</span></div>
 <div class="docrow">&mdash; <a href="diag-tools-rag.html">Tool-call + RAG Diagnostic</a> <span class="muted">&middot; Tool-call + RAG diagnostic.</span></div>
-
-<p class="muted">Organized by a SKOS concept scheme; each page carries Dublin&nbsp;Core + schema.org/DOAP/SIOC JSON-LD (see <a href="taxonomy.jsonld">taxonomy</a>, <a href="doap.jsonld">doap</a>). Generated from the AllegroGraph-backed RAG doc hub.</p>
+<div class="docrow">&mdash; <a href="devlog-2026-06-08-diag.html">Devlog — 2026-06-08 — Re-battery, tool-call/RAG diagnostic, Nemotron parser fix</a> <span class="muted">&middot; Re-battery / diagnostic session.</span></div>
+<div class="docrow">&mdash; <a href="shakedown-results.html">Shakedown Cruise — Results (2026-06-08)</a> <span class="muted">&middot; Stack shakedown.</span></div></div>
+<p class="muted catnote">Structure generated from a SKOS taxonomy in AllegroGraph; each page carries Dublin&nbsp;Core + schema.org/SIOC JSON-LD (<a href="taxonomy.jsonld">taxonomy</a> &middot; <a href="doap.jsonld">doap</a>).</p>
 <hr><p>As I have been given, so I freely give:<br>The documentation on this site is licensed under <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative&nbsp;Commons Attribution&nbsp;4.0 International (CC&nbsp;BY&nbsp;4.0)</a>. Code and bundled components (AllegroGraph, Llama/Nemotron weights, &amp;c.) retain their own licenses.</p><h4>&copy; 2026 Don Lindsay</h4>
 </body>
 </html>
