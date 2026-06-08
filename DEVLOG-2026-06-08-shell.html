@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEVLOG — 2026-06-08 — Shelve Ollama + the SHELL pedal — IRON &amp; FEATHERS</title>
+<meta name="description" content="Shelve Ollama (embeddings on llama.cpp) + the SHELL agentic pedal.">
+<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="site.css">
+<link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+<meta name="dcterms.license" content="https://creativecommons.org/licenses/by/4.0/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "DEVLOG \u2014 2026-06-08 \u2014 Shelve Ollama + the SHELL pedal",
+  "name": "DEVLOG \u2014 2026-06-08 \u2014 Shelve Ollama + the SHELL pedal",
+  "description": "Shelve Ollama (embeddings on llama.cpp) + the SHELL agentic pedal.",
+  "datePublished": "2026-06-08",
+  "dateModified": "2026-06-08",
+  "author": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "copyrightHolder": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "copyrightYear": 2026,
+  "articleSection": "Devlog",
+  "keywords": [
+    "AI Stack",
+    "AllegroGraph",
+    "llama.cpp",
+    "RAG",
+    "Devlog"
+  ],
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "IRON & FEATHERS",
+    "url": "https://donlindsay.github.io/"
+  },
+  "url": "https://donlindsay.github.io/DEVLOG-2026-06-08-shell.html",
+  "additionalType": "http://rdfs.org/sioc/ns#Post",
+  "about": {
+    "@type": "Thing",
+    "name": "Devlog"
+  }
+}
+</script>
+</head>
+<body>
+<table class="hdr"><tr><td><h1><a href="index.html">IRON &amp; FEATHERS</a></h1></td></tr><tr><td align="right">AI&nbsp;Stack &mdash; local-first KG+LLM workbench<br><a href="https://github.com/donlindsay">github.com/donlindsay</a></td></tr></table>
+<p class="crumb"><a href="index.html">&larr; index</a> <span class="muted">/ Devlog</span></p>
+<article>
+<h1>DEVLOG — 2026-06-08 — Shelve Ollama + the SHELL pedal</h1>
+<blockquote>id: <code>urn:kg:doc:devlog-2026-06-08-shell</code> · source: devlog · date: 2026-06-08</blockquote>
+<p>Two threads landed this session: <strong>Ollama fully removed from the runtime</strong>, and a new <strong>SHELL</strong> pedal that revives agentic tool-use.</p>
+<h2>1. Ollama shelved → embeddings on llama.cpp</h2>
+<p>Ollama was kept only to serve <code>nomic-embed-text</code> to AllegroGraph's vector store. Research into AG 9.0.1 showed its embedder is <code>demo|openai|ollama</code> with <strong>no custom-endpoint</strong> for <code>openai</code>, but the <strong><code>ollama</code> embedder's host/port IS configurable</strong> (<code>agraph.cfg &lt;llm ollama&gt;</code> → <code>host 127.0.0.1 port 11434</code>, and AG calls <code>GET /api/tags</code> + <code>POST /api/embed</code>).</p>
+<p>So instead of moving vectors out of AG, we kept them <strong>in AG</strong> and replaced the Ollama daemon with a drop-in <strong>embed adapter</strong> at <code>:11434</code>:</p>
+<ul><li><code>/opt/aistack/embed-adapter/app.py</code> — stdlib HTTP, loads a <code>nomic-embed-text-v1.5</code> GGUF in-process via <strong>llama-cpp-python</strong>, answers <code>/api/tags</code> + <code>/api/embed</code> (768-d, L2-normalized).</li><li><code>data.docs-vec</code> + <code>mem.agent-vec</code> re-indexed through it; <code>rag.py</code>/<code>memory.py</code> <strong>unchanged</strong>.</li><li><code>localllm.py</code>: <code>_ENGINES=("llamacpp",)</code>; default + graceful fallback → llamacpp; Ollama/vLLM flagged shelved; <code>_ollama_daemon_up()</code> is a process check (the :11434 HTTP probe now hits the adapter).</li><li><code>start-stack.sh</code> launches the adapter in place of <code>ollama serve</code>.</li></ul>
+<p><strong>Verified live:</strong> RAG retrieval scores 0.67 on-topic, <code>rag.ask</code> cites correctly, <code>memory.recall</code> returns hits, <code>/status</code> shows <code>ollama:false</code>, <code>/local-matrix</code> is llamacpp-only, <code>pgrep ollama</code> empty. Single runtime (llama.cpp) for chat <strong>and</strong> embeddings.</p>
+<h2>2. SHELL pedal — agentic chat-editor (CODE slot, was Tabby)</h2>
+<p>A bespoke chat-editor that turns the board into an agentic coding/shell console — closing the two gaps from the fitness report (dormant Nemotron agentic capability + narrow llama-cpp-python use).</p>
+<ul><li><code>aistack/shell.py</code> — <code>agent()</code> loop drives the engaged llama.cpp model with structured JSON output to pick and run shell commands, observe, and answer. <code>classify()</code> permission policy (read-only <strong>auto</strong> / mutating <strong>confirm</strong> / destructive <strong>deny</strong>, strictest segment wins); executors for Ubuntu bash + Windows PowerShell (per the ACCESS-&gt;SHELL knob); provenance to <code>custody</code> (PROV).</li><li><code>api.py</code> — <code>/shell/{chat,exec,classify,toolcheck}</code>.</li><li>App — slot-6 pedal Tabby → <strong>SHELL</strong>; MAIN page is the chat-editor (transcript + input + Run), wired to the ACCESS-&gt;SHELL knob via <code>ApiClient.ShellChatAsync</code>. Builds clean (Release+Debug).</li></ul>
+<p><strong>Verified:</strong> <code>classify(rm -rf /)</code>=deny, <code>classify(sudo …)</code>=deny; the agent ran <code>find … | wc -l</code> and answered correctly; the live <code>/shell/chat</code> endpoint drives the loop end-to-end.</p>
+<h2>Open / deferred</h2>
+<ul><li>App slot-0 <strong>engine pedal</strong> + Reaper grid still show Ollama (hardcoded <code>_matEngines</code>) — backend matrix is already llamacpp-only; the app-grid cleanup is pending.</li><li>SHELL follow-ons: code-prediction (FIM via llama-cpp-python), dev-tool provisioning (<code>rg</code>/<code>fd</code>), and Part B — AISTACK self-building (use SHELL to make its own changes under confirmation + provenance).</li></ul>
+</article>
+<hr><p>As I have been given, so I freely give:<br>The documentation on this site is licensed under <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative&nbsp;Commons Attribution&nbsp;4.0 International (CC&nbsp;BY&nbsp;4.0)</a>. Code and bundled components (AllegroGraph, Llama/Nemotron weights, &amp;c.) retain their own licenses.</p><h4>&copy; 2026 Don Lindsay</h4>
+</body>
+</html>
