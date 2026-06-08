@@ -11,6 +11,24 @@
 .docrow { margin: 0.35em 0; }
 .cap { text-align: center; font-size: 14px; }
 
+/* "built with" technology badges — theme pills, no external images */
+.badges { margin: 1.1em 0 1.7em; line-height: 2.4; }
+.badges a {
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: #ccff66;
+  background: #04120b;
+  border: 1px solid #235;
+  border-color: #1d4a3a;
+  border-radius: 3px;
+  padding: 2px 9px;
+  margin: 0 6px 4px 0;
+  text-decoration: none;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+.badges a:hover { background: #0b2a1a; border-color: #ccff66; color: #eaffb0; }
+
 /* nested SKOS group: narrower concepts indented under their broader concept */
 h3 { font-size: 1.05em; margin: 1.1em 0 0.35em; }
 .sub { margin: 0.4em 0 0.9em 1.1em; border-left: 1px solid #173a3a; padding-left: 1em; }
