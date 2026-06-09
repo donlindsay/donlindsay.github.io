@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FITNESS REPORT — AI-Stack × AllegroGraph (neuro-symbolic substrate) — IRON &amp; FEATHERS</title>
+<meta name="description" content="Fitness report — AllegroGraph as the stack&#x27;s first-class neuro-symbolic reasoning + memory substrate.">
+<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="site.css">
+<link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+<meta name="dcterms.license" content="https://creativecommons.org/licenses/by/4.0/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "FITNESS REPORT \u2014 AI-Stack \u00d7 AllegroGraph (neuro-symbolic substrate)",
+  "name": "FITNESS REPORT \u2014 AI-Stack \u00d7 AllegroGraph (neuro-symbolic substrate)",
+  "description": "Fitness report \u2014 AllegroGraph as the stack's first-class neuro-symbolic reasoning + memory substrate.",
+  "datePublished": "2026-06-09",
+  "dateModified": "2026-06-08",
+  "author": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "copyrightHolder": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "copyrightYear": 2026,
+  "articleSection": "Overview & Guides",
+  "keywords": [
+    "AI Stack",
+    "AllegroGraph",
+    "llama.cpp",
+    "RAG",
+    "Overview & Guides"
+  ],
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "IRON & FEATHERS",
+    "url": "https://donlindsay.github.io/"
+  },
+  "url": "https://donlindsay.github.io/FITNESS-REPORT-2026-06-09-allegrograph.html",
+  "additionalType": "http://rdfs.org/sioc/ns#Post",
+  "about": {
+    "@type": "Thing",
+    "name": "Overview & Guides"
+  }
+}
+</script>
+</head>
+<body>
+<table class="hdr"><tr><td><h1><a href="index.html">IRON &amp; FEATHERS</a></h1></td></tr><tr><td align="right">AI&nbsp;Stack &mdash; local-first KG+LLM workbench<br><a href="https://github.com/donlindsay">github.com/donlindsay</a></td></tr></table>
+<p class="crumb"><a href="index.html">&larr; index</a> <span class="muted">/ Overview &amp; Guides</span></p>
+<article>
+<h1>FITNESS REPORT — AI-Stack × AllegroGraph (neuro-symbolic substrate)</h1>
+<table class="md"><thead><tr><th>Field</th><th>Entry</th></tr></thead><tbody><tr><td><strong>Subject</strong></td><td>AI-Stack pedalboard, evaluated as a neuro-symbolic / knowledge-graph platform</td></tr><tr><td><strong>Reporting Period</strong></td><td>2026-06-09</td></tr><tr><td><strong>Reporting Senior</strong></td><td>External documentation reviewer</td></tr><tr><td><strong>Billet</strong></td><td>Neuro-symbolic KG platform — AllegroGraph as first-class reasoning + memory substrate</td></tr></tbody></table>
+<h2>1. Opening statement</h2>
+<p>Concur with the Reporting Senior's central finding: "AI-Stack + AllegroGraph = neuro-symbolic / KG platform" <strong>is</strong> the right center of gravity, and AllegroGraph should be treated as a first-class reasoning and memory substrate rather than a bolt-on datastore. The correction is granted in full — with one turn. The substrate work is <strong>already done</strong>: AllegroGraph is wired through retrieval, memory, sessions, provenance, querying, and visualization. The gap is not architecture; it is that the <strong>docs undersell it</strong>, reading like generic MLOps when the running system is a working neuro-symbolic platform. Here, <em>neuro-symbolic</em> = Nemotron / llama.cpp (neural) ⨉ AllegroGraph (symbolic: RDF, SPARQL, the in-store Prolog reasoner, and vectors-in-store).</p>
+<h2>2. Graded marks</h2>
+<ul><li><strong>(a) AllegroGraph as first-class reasoning + MEMORY substrate — ★★★★★</strong></li></ul>
+<p>  GraphRAG retrieval runs over AG's native vector store across the document corpus (<code>data.docs</code>); long-term agent memory and durable facts live in AG (<code>mem.agent</code>, <code>data.facts</code>); every SHELL session's transcript + context is persisted as RDF in <code>shell.sessions</code> and survives restarts.</p>
+<ul><li><strong>(b) Neuro-symbolic workflows — ★★★★★</strong></li></ul>
+<p>  Neural embeddings from llama.cpp (<code>nomic-embed-text</code>) and Nemotron generation are joined to symbolic RDF/SPARQL and the in-store Prolog reasoner; custody is a tamper-evident chain of <code>cc:Event</code> triples (<code>cc:seq</code> + <code>cc:prev</code>) in the custody artifact graph.</p>
+<ul><li><strong>(c) NL→SPARQL Graph pedal + KG/Gruff visualization — ★★★★☆</strong></li></ul>
+<p>  The Graph pedal compiles English into generated SPARQL and executes it against AllegroGraph; the KG / Gruff pedal renders knowledge-graph snapshots.</p>
+<ul><li><strong>(d) Docs positioning — ★★☆☆☆ (the real finding / action item)</strong></li></ul>
+<p>  Documentation foregrounds generic MLOps and budget/cloud tone instead of the KG substrate. This is the Reporting Senior's true deficiency and the focus of the development plan below.</p>
+<h2>3. Corrective actions / development plan</h2>
+<p>Adopt the reviewer's doc subtree and make the Knowledge-Graph section top-level. Add a conceptual paragraph naming AllegroGraph and a block diagram with <strong>AG as the knowledge layer</strong>:</p>
+<pre><code>
+  [ llama.cpp / Nemotron ]  --neural--&gt;  [ Pedals: Ask · Graph · KG/Gruff · SHELL ]
+                                              |  SPARQL / vectors / Prolog
+                                              v
+   ====================  AllegroGraph (knowledge layer)  ====================
+   data.docs (vectors) · mem.agent · data.facts · shell.sessions · custody · site.kg
+</code></pre>
+<p>Doc tree: <strong>Concepts</strong> (RDF / repositories / auth) → <strong>Setting up a repository</strong> → <strong>Loading data</strong> (bulk + streaming) → <strong>Querying with SPARQL</strong> (2–3 examples) → <strong>Using AG from agents/LLMs</strong>:</p>
+<ul><li><em>Recipe 1</em> — SPARQL → JSON results → feed to llama.cpp/Nemotron as grounded context.</li><li><em>Recipe 2</em> — NL → generated SPARQL (Graph pedal) → answer → record to custody.</li></ul>
+<p>Then <strong>Operating notes</strong>. Move governance/budget/cloud tone to an <strong>appendix</strong>. Replace generic TensorFlow examples with AG-centric ones (vector search over <code>data.docs</code>, SKOS traversal of the site IA, custody-chain queries). Note: the doc-site's own information architecture is a SKOS <code>ConceptScheme</code> in <code>site.kg</code>, queried by the generator (<code>build_site.py</code>) via SPARQL — the docs already eat their own dog food.</p>
+<h2>4. Answer to the closing question</h2>
+<p>For THIS stack, AllegroGraph is <strong>primarily RAG-style QA</strong> over the corpus (the Ask pedal, vectors-in-store). But it is <strong>also a native entity-event model</strong>: custody/provenance (<code>cc:Event</code> chains) and durable SHELL sessions ARE entity-event graphs. And it carries <strong>light analytics/BI</strong> via SPARQL aggregates in the Graph pedal. So: RAG-first, entity-event by construction, analytics as a bonus.</p>
+<h2>5. Reporting Official</h2>
+<p>Prepared <strong>by SHELL</strong>, dogfooding its own <code>write_file</code> tooling to author this report. This document's own provenance is appended to the AllegroGraph custody chain as a <code>cc:Event</code> (<code>cc:seq</code> + <code>cc:prev</code>) — the report attests to itself.</p>
+</article>
+<hr><p>As I have been given, so I freely give:<br>The documentation on this site is licensed under <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative&nbsp;Commons Attribution&nbsp;4.0 International (CC&nbsp;BY&nbsp;4.0)</a>. Code and bundled components (AllegroGraph, Llama/Nemotron weights, &amp;c.) retain their own licenses.</p><h4>&copy; 2026 Don Lindsay</h4>
+</body>
+</html>
