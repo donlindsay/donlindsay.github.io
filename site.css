@@ -56,3 +56,14 @@ pre code { color: #ccff66; }
 :not(pre) > code { color: #ccff66; }
 blockquote { border-left: 3px solid #2a6; margin: 1.1em 0; padding: 0.2em 1em; color: #7ec; }
 hr { border: none; border-top: 1px solid #173a3a; margin: 2em 0; }
+
+/* featured devlog hero + demo video */
+.featured-hero { border:1px solid #2f8d57; background:#0f1c18; border-radius:8px; padding:14px 16px; margin:0.6em 0 1.1em; }
+.featured-hero .fh-badge { font:600 11px/1 monospace; letter-spacing:0.12em; color:#46d27f; margin-bottom:6px; }
+.featured-hero .fh-title { font-weight:700; font-size:1.08em; color:#eafff0; text-decoration:none; }
+.featured-hero .fh-title:hover { text-decoration:underline; }
+.featured-hero .fh-blurb { margin:4px 0 8px; }
+.featured-hero .fh-watch { font:600 13px monospace; color:#e0a070; text-decoration:none; }
+.featured-hero .fh-watch:hover { text-decoration:underline; }
+figure.demo { margin:1.1em 0; }
+figure.demo video { width:100%; max-width:760px; border:1px solid #2a2d33; border-radius:6px; background:#000; }
