@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEVLOG SNAPSHOT — AI Stack — 2026-06-11 (NVIDIA agent stack + inference escalation) — IRON &amp; FEATHERS</title>
+<meta name="description" content="NVIDIA agent stack (OpenShell/NemoClaw) installed on aishell + a two-tier Nemotron-4B/Council inference escalation router; NemoClaw&#x27;s runtime blocked by an OpenShell-WSL2 transport bug.">
+<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="site.css">
+<link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+<meta name="dcterms.license" content="https://creativecommons.org/licenses/by/4.0/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "DEVLOG SNAPSHOT \u2014 AI Stack \u2014 2026-06-11 (NVIDIA agent stack + inference escalation)",
+  "name": "DEVLOG SNAPSHOT \u2014 AI Stack \u2014 2026-06-11 (NVIDIA agent stack + inference escalation)",
+  "description": "NVIDIA agent stack (OpenShell/NemoClaw) installed on aishell + a two-tier Nemotron-4B/Council inference escalation router; NemoClaw's runtime blocked by an OpenShell-WSL2 transport bug.",
+  "datePublished": "2026-06-11",
+  "dateModified": "2026-06-08",
+  "author": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "copyrightHolder": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "copyrightYear": 2026,
+  "articleSection": "Devlog",
+  "keywords": [
+    "AI Stack",
+    "AllegroGraph",
+    "llama.cpp",
+    "RAG",
+    "Devlog"
+  ],
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "IRON & FEATHERS",
+    "url": "https://donlindsay.github.io/"
+  },
+  "url": "https://donlindsay.github.io/DEVLOG-2026-06-11-agent-stack.html",
+  "additionalType": "http://rdfs.org/sioc/ns#Post",
+  "about": {
+    "@type": "Thing",
+    "name": "Devlog"
+  }
+}
+</script>
+</head>
+<body>
+<table class="hdr"><tr><td><h1><a href="index.html">IRON &amp; FEATHERS</a></h1></td></tr><tr><td align="right">AI&nbsp;Stack &mdash; local-first KG+LLM workbench<br><a href="https://github.com/donlindsay">github.com/donlindsay</a></td></tr></table>
+<p class="crumb"><a href="index.html">&larr; index</a> <span class="muted">/ Devlog</span></p>
+<article>
+<h1>DEVLOG SNAPSHOT — AI Stack — 2026-06-11 (NVIDIA agent stack + inference escalation)</h1>
+<p>This snapshot covers making the 196 installed NVIDIA skills consumable by the graph-native agent, a two-tier inference escalation router, the NVIDIA agent-stack install onto aishell, and the transport bug that blocked NemoClaw's runtime.</p>
+<h2>1. This session</h2>
+<ul><li><strong>NVIDIA skills made graph-consumable.</strong> aistack.skills_catalog parses the installed SKILL.md frontmatter into an RDF index (nvskills.ttl loaded as the vocab.kg named graph &lt;http://kg.local/nvskills&gt;): 196 nvsk:Skill across 28 families, SPARQL-discoverable by description and family. The cuOpt family's full bodies were RAG-grounded into data.docs via aistack.ground_skills so they retrieve from the vector store; discovery is wired into the operating note as shell:SkillDiscoverNvSkills.</li><li><strong>Two-tier inference escalation router.</strong> aistack.nemorouter + nemorouter_server expose ONE OpenAI-compatible endpoint where the model field (nemotron|council|auto) selects the tier — Tier 1 local Nemotron-4B (free) and Tier 2 the Cloud Council. It reuses the existing SHELL escalation machinery rather than inventing a new protocol: ACCESS-&gt;NET=CLOUD opt-in (config NET_CLOUD), CALLER_BUDGETS, spend metered as caller 'nemoclaw-agent', and triage.classify for auto routing. Cloud-off or over-budget degrades gracefully to Nemotron (shell:ProtoNemoClawInference).</li><li><strong>NVIDIA agent stack installed on aishell.</strong> OpenShell (uv tool) and NemoClaw (its real installer, run under a Bash permission rule); aishell added to the docker group with GPU-in-container verified (RTX 5070). Added two GPU venvs — cuda-python 13.3.1 and nvidia-resiliency-ext 0.6.0 on torch 2.12+cu13 — both GPU-verified. NemoClaw's own nim-local provider failed because it can't see the WSL GPU (it lives at /dev/dxg, not /dev/nvidia*), so inference was onboarded against the nemorouter instead, validated, and baked into the sandbox image.</li><li><strong>Hard wall: OpenShell&lt;-&gt;WSL2 transport bug.</strong> Short gRPC calls succeed, but the long-lived gateway&lt;-&gt;sandbox supervisor stream dies at ~215s with an h2 protocol error and the SSH-over-gRPC dashboard forward exits 255, tearing down the sandbox. Root-caused away from the obvious suspects: br_netfilter is loaded, MTU is a uniform 1500, and the failing traffic is docker-internal. WSL networkingMode=mirrored produced an identical failure (ruling out the WSL NAT layer) and was reverted — this is an upstream OpenShell/NemoClaw alpha bug.</li></ul>
+<h2>2. Lessons / TODO</h2>
+<ul><li>Cataloguing SKILL.md frontmatter into RDF and RAG-grounding the bodies is the right way to make external coding-agent skills consumable by a graph-native agent: discover via SPARQL, retrieve via the vector store.</li><li>The escalation router reuses the stack's existing local&lt;-&gt;cloud protocol — one endpoint, model field selects the tier — instead of a parallel mechanism.</li><li>Mirrored networking does not fix OpenShell's long-lived gateway&lt;-&gt;sandbox streams because that traffic is docker-internal, not WSL&lt;-&gt;Windows; report upstream or run NemoClaw off WSL.</li><li>TODO: make the nemorouter persistent (add to start-stack.sh); reconcile the OpenShell version skew (0.0.59 uv tool vs 0.0.44 NemoClaw-bundled).</li></ul>
+</article>
+<hr><p>As I have been given, so I freely give:<br>The documentation on this site is licensed under <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative&nbsp;Commons Attribution&nbsp;4.0 International (CC&nbsp;BY&nbsp;4.0)</a>. Code and bundled components (AllegroGraph, Llama/Nemotron weights, &amp;c.) retain their own licenses.</p><h4>&copy; 2026 Don Lindsay</h4>
+</body>
+</html>

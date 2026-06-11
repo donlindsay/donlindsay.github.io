@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEVLOG SNAPSHOT — AI Stack — 2026-06-10 (council expansion + install capability) — IRON &amp; FEATHERS</title>
+<meta name="description" content="Cross-vendor council expansion (Mistral Large 3 / gpt-oss / Llama via a registry of NVIDIA-NIM seats) and the SHELL user-scoped software-install capability.">
+<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="site.css">
+<link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+<meta name="dcterms.license" content="https://creativecommons.org/licenses/by/4.0/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "DEVLOG SNAPSHOT \u2014 AI Stack \u2014 2026-06-10 (council expansion + install capability)",
+  "name": "DEVLOG SNAPSHOT \u2014 AI Stack \u2014 2026-06-10 (council expansion + install capability)",
+  "description": "Cross-vendor council expansion (Mistral Large 3 / gpt-oss / Llama via a registry of NVIDIA-NIM seats) and the SHELL user-scoped software-install capability.",
+  "datePublished": "2026-06-10",
+  "dateModified": "2026-06-08",
+  "author": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "copyrightHolder": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "copyrightYear": 2026,
+  "articleSection": "Devlog",
+  "keywords": [
+    "AI Stack",
+    "AllegroGraph",
+    "llama.cpp",
+    "RAG",
+    "Devlog"
+  ],
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "IRON & FEATHERS",
+    "url": "https://donlindsay.github.io/"
+  },
+  "url": "https://donlindsay.github.io/DEVLOG-2026-06-10-council-and-install.html",
+  "additionalType": "http://rdfs.org/sioc/ns#Post",
+  "about": {
+    "@type": "Thing",
+    "name": "Devlog"
+  }
+}
+</script>
+</head>
+<body>
+<table class="hdr"><tr><td><h1><a href="index.html">IRON &amp; FEATHERS</a></h1></td></tr><tr><td align="right">AI&nbsp;Stack &mdash; local-first KG+LLM workbench<br><a href="https://github.com/donlindsay">github.com/donlindsay</a></td></tr></table>
+<p class="crumb"><a href="index.html">&larr; index</a> <span class="muted">/ Devlog</span></p>
+<article>
+<h1>DEVLOG SNAPSHOT — AI Stack — 2026-06-10 (council expansion + install capability)</h1>
+<p>This snapshot covers the cross-vendor council expansion into a registry-driven seat model and the SHELL software-install capability that was prepared and then exercised.</p>
+<h2>1. This session</h2>
+<ul><li><strong>Cross-vendor council, made registry-driven.</strong> Added an NVIDIA NIM seat nvidia-nano (Nemotron-3 nano-omni 30B) beside the 550B Ultra; operator policy is that the NVIDIA keys are promotional — used until they 401/quota-exhaust or terms change — and are metered at $0. Then generalized the two hardcoded seats into /opt/aistack/.nvidia-seats.json (mode 600, outside the repo): each {id, model, label, optional key} becomes a seat via council._make_nvidia_seat, so adding a hosted model is one JSON line. First per-seat-key entry is Meta Llama 3.3 70B.</li><li><strong>Catalog fitness survey.</strong> Probed all 120 NVIDIA NIM catalog models for actual reachability across the three keys: 48 healthy, 58 not-provisioned (404 "not found for account" — NIM access is account-scoped), 11 degraded/hanging. Ranked healthy chat models by a transparent fitness score (size + capability + speed) and seated the two best new general voices, Mistral Large 3 675B and OpenAI gpt-oss 120B. Held back phi-4 (NVIDIA's phi-4 functions are degraded provider-side); operator excluded Qwen and DeepSeek. Council is now 8 reasoning seats across 5 vendors (Anthropic x3, Nemotron x2, Meta, Mistral, OpenAI).</li><li><strong>Latent bug fixed.</strong> core.nvidia_chat hardcoded chat_template_kwargs {enable_thinking:false}, which Mistral tokenizers reject with HTTP 400; the toggle is now gated to nemotron/qwen ids only, making the registry genuinely model-agnostic.</li><li><strong>SHELL software-install capability — prepared, then exercised.</strong> SHELL runs as the aishell user (HOME=/opt/aistack/work, login bash -lc). A new ~/.profile puts ~/.local/bin on PATH and sets the pipx env; install verbs (pipx/uv/gem/go) were added to the gate's _MUTATING so every install is confirm-gated while <code>sudo apt</code> stays denied unless the SUDO window is open; an INSTALLING SOFTWARE operating note codifies the policy (pipx for apps, venv/uv for libs, apt-in-SUDO for system; system python is PEP668 — never --break-system-packages); registered shell:SkillInstall. Proven with <code>pipx install uv</code>, then npm+npx 9.2.0 installed via the SUDO window and all 196 nvidia/skills (the <code>npx skills</code> CLI) into the aishell environment. Installing the same skills into the live Claude Code desktop app was blocked by the auto-mode safety classifier (self-modification + untrusted-code integration) even on operator request — that target is operator-run. A pre-existing broken dpkg package (nvidia-ai-workbench) surfaced and makes apt exit non-zero.</li></ul>
+<h2>2. Lessons / TODO</h2>
+<ul><li>NVIDIA NIM model access is account-scoped: a catalog id can 404 "not found for account", and the promotional keys are separate accounts.</li><li>Registry-driven seats were the right abstraction once the third model arrived — one JSON line each.</li><li>A hardcoded provider param (enable_thinking) broke a new vendor; gate provider-specific params by model family.</li><li>The safety classifier correctly refused to self-modify the live agent with untrusted skills.</li><li>TODO: adapt the SKILL.md skills into a SHELL-consumable form (the Nemotron agent does not read them); fix the broken nvidia-ai-workbench package.</li></ul>
+</article>
+<hr><p>As I have been given, so I freely give:<br>The documentation on this site is licensed under <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative&nbsp;Commons Attribution&nbsp;4.0 International (CC&nbsp;BY&nbsp;4.0)</a>. Code and bundled components (AllegroGraph, Llama/Nemotron weights, &amp;c.) retain their own licenses.</p><h4>&copy; 2026 Don Lindsay</h4>
+</body>
+</html>
