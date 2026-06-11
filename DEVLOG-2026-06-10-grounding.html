@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEVLOG SNAPSHOT — AI Stack — 2026-06-10 — IRON &amp; FEATHERS</title>
+<meta name="description" content="First real-world grounding ingest — chunked talk transcripts into data.docs via aistack.ground.">
+<link rel="stylesheet" href="main.css">
+<link rel="stylesheet" href="site.css">
+<link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+<meta name="dcterms.license" content="https://creativecommons.org/licenses/by/4.0/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "DEVLOG SNAPSHOT \u2014 AI Stack \u2014 2026-06-10",
+  "name": "DEVLOG SNAPSHOT \u2014 AI Stack \u2014 2026-06-10",
+  "description": "First real-world grounding ingest \u2014 chunked talk transcripts into data.docs via aistack.ground.",
+  "datePublished": "2026-06-10",
+  "dateModified": "2026-06-08",
+  "author": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "copyrightHolder": {
+    "@type": "Person",
+    "name": "Don Lindsay"
+  },
+  "copyrightYear": 2026,
+  "articleSection": "Devlog",
+  "keywords": [
+    "AI Stack",
+    "AllegroGraph",
+    "llama.cpp",
+    "RAG",
+    "Devlog"
+  ],
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "IRON & FEATHERS",
+    "url": "https://donlindsay.github.io/"
+  },
+  "url": "https://donlindsay.github.io/DEVLOG-2026-06-10-grounding.html",
+  "additionalType": "http://rdfs.org/sioc/ns#Post",
+  "about": {
+    "@type": "Thing",
+    "name": "Devlog"
+  }
+}
+</script>
+</head>
+<body>
+<table class="hdr"><tr><td><h1><a href="index.html">IRON &amp; FEATHERS</a></h1></td></tr><tr><td align="right">AI&nbsp;Stack &mdash; local-first KG+LLM workbench<br><a href="https://github.com/donlindsay">github.com/donlindsay</a></td></tr></table>
+<p class="crumb"><a href="index.html">&larr; index</a> <span class="muted">/ Devlog</span></p>
+<article>
+<h1>DEVLOG SNAPSHOT — AI Stack — 2026-06-10</h1>
+<p>A private, offline-first knowledge-and-tools workbench running natively in WSL2 Ubuntu.</p>
+<h2>1. This session</h2>
+<ul><li><strong>App launched with stack down</strong> - SHELL hit 'connection refused 127.0.0.1:8765', fixed by re-running start-stack.sh.</li><li><strong>First real-world run of aistack.ground</strong>: bare 'python -m' and 'python3 -m' both failed with ModuleNotFoundError because aistack is a source-layout package - it only resolves from /opt/aistack/main using venv/bin/python; the failing command was retried through three confirm gates because stderr is not shown in the transcript.</li><li><strong>Working command</strong>: cd /opt/aistack/main &amp;&amp; venv/bin/python -m aistack.ground '&lt;url&gt;' with --creator omitted so real uploader metadata wins.</li><li><strong>Result</strong>: grounded 'Neuro-Symbolic AI with AllegroGraph' (AllegroGraph), 1 part / 18555 chars into data.docs.</li><li><strong>Verified</strong>: AllegroGraph pedal Ask answered with citation [1] into the new doc.</li></ul>
+<h2>2. Lessons / TODO</h2>
+<ul><li>surface command stderr in the SHELL transcript; add the venv invocation to the SHELL operating note.</li></ul>
+</article>
+<hr><p>As I have been given, so I freely give:<br>The documentation on this site is licensed under <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative&nbsp;Commons Attribution&nbsp;4.0 International (CC&nbsp;BY&nbsp;4.0)</a>. Code and bundled components (AllegroGraph, Llama/Nemotron weights, &amp;c.) retain their own licenses.</p><h4>&copy; 2026 Don Lindsay</h4>
+</body>
+</html>
