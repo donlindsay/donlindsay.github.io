@@ -15,6 +15,12 @@
       "skos:scopeNote": "What the stack is, how to run it, and how it's built."
     },
     {
+      "@id": "#explainer",
+      "@type": "skos:Concept",
+      "skos:prefLabel": "Explainers",
+      "skos:scopeNote": "Conceptual pieces \u2014 how the stack thinks."
+    },
+    {
       "@id": "#devlog",
       "@type": "skos:Concept",
       "skos:prefLabel": "Devlog",
